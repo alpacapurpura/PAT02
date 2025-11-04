@@ -1,0 +1,24 @@
+[project]
+name = "odoo-addons-oca-account-payment"
+version = "18.0.20250905.0"
+dependencies = [
+    "odoo-addon-account_check_printing_report_base==18.0.*",
+    "odoo-addon-account_due_list==18.0.*",
+    "odoo-addon-account_due_list_payment_mode==18.0.*",
+    "odoo-addon-account_payment_method_base==18.0.*",
+    "odoo-addon-account_payment_notification==18.0.*",
+    "odoo-addon-account_payment_promissory_note==18.0.*",
+    "odoo-addon-account_payment_return==18.0.*",
+    "odoo-addon-account_payment_return_import==18.0.*",
+    "odoo-addon-account_payment_return_import_iso20022==18.0.*",
+    "odoo-addon-account_payment_show_invoice==18.0.*",
+    "odoo-addon-account_payment_term_extension==18.0.*",
+    "odoo-addon-account_payment_tier_validation==18.0.*",
+    "odoo-addon-account_refund_early_payment_discount==18.0.*",
+    "odoo-addon-account_voucher_killer==18.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 18.0",
+]

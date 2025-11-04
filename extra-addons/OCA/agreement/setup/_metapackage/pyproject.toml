@@ -1,0 +1,15 @@
+[project]
+name = "odoo-addons-oca-agreement"
+version = "18.0.20250915.0"
+dependencies = [
+    "odoo-addon-agreement==18.0.*",
+    "odoo-addon-agreement_account==18.0.*",
+    "odoo-addon-agreement_legal==18.0.*",
+    "odoo-addon-agreement_rebate==18.0.*",
+    "odoo-addon-agreement_sale==18.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 18.0",
+]

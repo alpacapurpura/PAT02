@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <!-- Reglas de Registro para Técnicos - Restricción de Datos -->
+        
+        <!-- FSM Orders: Técnicos solo ven órdenes asignadas a ellos -->
+        <record id="fsm_order_technician_rule" model="ir.rule">
+            <field name="name">FSM Order: Técnico - Solo órdenes asignadas</field>
+            <field name="model_id" ref="fieldservice.model_fsm_order"/>
+            <field name="domain_force">[('person_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_patco_technician'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        
+        <!-- Equipment: Técnicos solo ven activos de sus órdenes asignadas 
+        <record id="maintenance_equipment_technician_rule" model="ir.rule">
+            <field name="name">Equipment: Técnico - Solo activos de órdenes asignadas</field>
+            <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
+            <field name="domain_force">['|', ('fsm_order_ids.person_id.user_id', '=', user.id), ('create_uid', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_patco_technician'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>-->
+        
+        <!-- Stock Locations: Técnicos solo ven su ubicación de furgoneta
+        <record id="stock_location_technician_rule" model="ir.rule">
+            <field name="name">Stock Location: Técnico - Solo su furgoneta</field>
+            <field name="model_id" ref="stock.model_stock_location"/>
+            <field name="domain_force">['|', ('x_technician_id.user_id', '=', user.id), ('usage', '!=', 'internal')]</field>
+            <field name="groups" eval="[(4, ref('group_patco_technician'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>-->
+        
+        <!-- Stock Quants: Técnicos solo ven stock de su furgoneta 
+        <record id="stock_quant_technician_rule" model="ir.rule">
+            <field name="name">Stock Quant: Técnico - Solo stock de su furgoneta</field>
+            <field name="model_id" ref="stock.model_stock_quant"/>
+            <field name="domain_force">[('location_id.x_technician_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_patco_technician'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>-->
+        
+        <!-- Agreements: Técnicos solo ven acuerdos relacionados con sus órdenes 
+        <record id="agreement_technician_rule" model="ir.rule">
+            <field name="name">Agreement: Técnico - Solo acuerdos de órdenes asignadas</field>
+            <field name="model_id" ref="agreement.model_agreement"/>
+            <field name="domain_force">[('fsm_order_ids.person_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_patco_technician'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>-->
+        
+        <!-- HR Employee: Técnicos solo ven su propio perfil 
+        <record id="hr_employee_technician_rule" model="ir.rule">
+            <field name="name">HR Employee: Técnico - Solo su perfil</field>
+            <field name="model_id" ref="hr.model_hr_employee"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_patco_technician'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>-->
+        
+        <!-- Reglas para Jefe de Operaciones - Sin restricciones operativas -->
+        
+        <!-- Facturas: Jefe de Operaciones NO puede ver facturas 
+        <record id="account_move_ops_manager_rule" model="ir.rule">
+            <field name="name">Account Move: Jefe Ops - Sin acceso a facturas</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[('id', '=', 0)]</field>
+            <field name="groups" eval="[(4, ref('group_patco_operations_manager'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>-->
+        
+        <!-- Pagos: Jefe de Operaciones NO puede ver pagos 
+        <record id="account_payment_ops_manager_rule" model="ir.rule">
+            <field name="name">Account Payment: Jefe Ops - Sin acceso a pagos</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="domain_force">[('id', '=', 0)]</field>
+            <field name="groups" eval="[(4, ref('group_patco_operations_manager'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>-->
+        
+        <!-- Usuarios: Solo Administrativo y Gerente pueden gestionar usuarios
+        <record id="res_users_creation_rule" model="ir.rule">
+            <field name="name">Users: Solo Administrativo+ puede crear usuarios</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="domain_force">[('id', '!=', 0)]</field>
+            <field name="groups" eval="[(4, ref('group_patco_operations_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>-->
+        
+    </data>
+</odoo>

@@ -1,0 +1,311 @@
+# Configuración de Pre-commit para el Servidor MCP
+# ===============================================
+#
+# Este archivo configura los hooks de pre-commit para mantener
+# la calidad del código y consistencia en el proyecto.
+#
+# Instalación:
+#   pip install pre-commit
+#   pre-commit install
+#
+# Ejecución manual:
+#   pre-commit run --all-files
+#
+# Autor: PATCO Development Team
+# Versión: 1.0.0
+# Fecha: Enero 2025
+
+# Configuración general
+repos:
+  # ============================================================================
+  # HOOKS BÁSICOS
+  # ============================================================================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      # Verificaciones básicas de archivos
+      - id: trailing-whitespace
+        name: Eliminar espacios en blanco al final
+        description: Elimina espacios en blanco innecesarios al final de las líneas
+        
+      - id: end-of-file-fixer
+        name: Asegurar nueva línea al final del archivo
+        description: Asegura que los archivos terminen con una nueva línea
+        
+      - id: check-yaml
+        name: Verificar sintaxis YAML
+        description: Verifica que los archivos YAML tengan sintaxis válida
+        
+      - id: check-json
+        name: Verificar sintaxis JSON
+        description: Verifica que los archivos JSON tengan sintaxis válida
+        
+      - id: check-toml
+        name: Verificar sintaxis TOML
+        description: Verifica que los archivos TOML tengan sintaxis válida
+        
+      - id: check-xml
+        name: Verificar sintaxis XML
+        description: Verifica que los archivos XML tengan sintaxis válida
+        
+      # Verificaciones de merge conflicts
+      - id: check-merge-conflict
+        name: Verificar conflictos de merge
+        description: Verifica que no haya marcadores de conflictos de merge
+        
+      # Verificaciones de archivos grandes
+      - id: check-added-large-files
+        name: Verificar archivos grandes
+        description: Previene la adición de archivos grandes al repositorio
+        args: ['--maxkb=1000']
+        
+      # Verificaciones de Python
+      - id: check-ast
+        name: Verificar sintaxis Python
+        description: Verifica que los archivos Python tengan sintaxis válida
+        
+      - id: debug-statements
+        name: Verificar declaraciones de debug
+        description: Verifica que no haya declaraciones de debug (pdb, ipdb, etc.)
+        
+      - id: name-tests-test
+        name: Verificar nombres de tests
+        description: Verifica que los archivos de test sigan la convención de nombres
+        args: ['--pytest-test-first']
+        
+      # Verificaciones de seguridad
+      - id: detect-private-key
+        name: Detectar claves privadas
+        description: Detecta claves privadas que no deberían estar en el código
+        
+  # ============================================================================
+  # FORMATEO DE CÓDIGO
+  # ============================================================================
+  
+  # Black - Formateador de código Python
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+        name: Formatear código con Black
+        description: Formatea el código Python usando Black
+        language_version: python3
+        args: ['--line-length=88', '--target-version=py311']
+        
+  # isort - Ordenamiento de imports
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        name: Ordenar imports con isort
+        description: Ordena los imports de Python
+        args: ['--profile=black', '--line-length=88']
+        
+  # ============================================================================
+  # LINTING Y ANÁLISIS ESTÁTICO
+  # ============================================================================
+  
+  # Flake8 - Linter principal
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        name: Verificar código con Flake8
+        description: Ejecuta análisis estático con Flake8
+        additional_dependencies:
+          - flake8-docstrings
+          - flake8-import-order
+          - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-simplify
+          - flake8-bandit
+        args:
+          - '--max-line-length=88'
+          - '--extend-ignore=E203,W503,E501'
+          - '--max-complexity=10'
+          - '--docstring-convention=google'
+          
+  # MyPy - Type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1
+    hooks:
+      - id: mypy
+        name: Verificar tipos con MyPy
+        description: Ejecuta verificación de tipos estáticos
+        additional_dependencies:
+          - types-requests
+          - types-PyYAML
+          - types-python-dateutil
+        args:
+          - '--ignore-missing-imports'
+          - '--disallow-untyped-defs'
+          - '--warn-return-any'
+          - '--warn-unused-configs'
+          
+  # ============================================================================
+  # SEGURIDAD
+  # ============================================================================
+  
+  # Bandit - Análisis de seguridad
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        name: Análisis de seguridad con Bandit
+        description: Ejecuta análisis de vulnerabilidades de seguridad
+        args: ['-r', '.', '-f', 'json', '-o', 'bandit-report.json']
+        exclude: '^tests/'
+        
+  # Safety - Vulnerabilidades en dependencias
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.2
+    hooks:
+      - id: python-safety-dependencies-check
+        name: Verificar vulnerabilidades en dependencias
+        description: Verifica vulnerabilidades conocidas en las dependencias
+        
+  # ============================================================================
+  # DOCUMENTACIÓN
+  # ============================================================================
+  
+  # Verificación de docstrings
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+      - id: pydocstyle
+        name: Verificar docstrings
+        description: Verifica el formato y presencia de docstrings
+        args:
+          - '--convention=google'
+          - '--add-ignore=D100,D101,D102,D103,D104,D105,D106,D107'
+        exclude: '^tests/'
+        
+  # ============================================================================
+  # ARCHIVOS ESPECÍFICOS
+  # ============================================================================
+  
+  # Verificación de requirements.txt
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-markup
+    rev: v1.0.1
+    hooks:
+      - id: rst-backticks
+        name: Verificar backticks en RST
+        description: Verifica el uso correcto de backticks en archivos RST
+        
+  # Verificación de archivos Docker
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+        name: Verificar Dockerfile con Hadolint
+        description: Verifica las mejores prácticas en Dockerfiles
+        
+  # ============================================================================
+  # HOOKS LOCALES PERSONALIZADOS
+  # ============================================================================
+  
+  - repo: local
+    hooks:
+      # Verificar que no haya prints en el código de producción
+      - id: no-print-statements
+        name: Verificar declaraciones print
+        description: Verifica que no haya declaraciones print en código de producción
+        entry: bash -c 'if grep -r "print(" --include="*.py" --exclude-dir=tests .; then echo "Found print statements in production code"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        
+      # Verificar que los tests tengan docstrings
+      - id: test-docstrings
+        name: Verificar docstrings en tests
+        description: Verifica que los tests tengan docstrings descriptivos
+        entry: python
+        language: system
+        files: '^tests/.*\.py$'
+        args: ['-c', 'import sys; import ast; [sys.exit(1) for f in sys.argv[1:] if not any(isinstance(node, ast.FunctionDef) and ast.get_docstring(node) for node in ast.walk(ast.parse(open(f).read())) if isinstance(node, ast.FunctionDef) and node.name.startswith("test_"))]']
+        
+      # Verificar configuración de logging
+      - id: logging-config
+        name: Verificar configuración de logging
+        description: Verifica que se use logging en lugar de print
+        entry: bash -c 'if grep -r "logging\.basicConfig" --include="*.py" .; then echo "Use structured logging configuration instead of basicConfig"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        
+      # Verificar imports relativos
+      - id: no-relative-imports
+        name: Verificar imports relativos
+        description: Verifica que no se usen imports relativos innecesarios
+        entry: bash -c 'if grep -r "from \.\.\?" --include="*.py" --exclude-dir=tests .; then echo "Avoid relative imports in production code"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        
+      # Verificar variables de entorno hardcodeadas
+      - id: no-hardcoded-env
+        name: Verificar variables hardcodeadas
+        description: Verifica que no haya variables de entorno hardcodeadas
+        entry: bash -c 'if grep -r "os\.environ\[" --include="*.py" --exclude-dir=tests .; then echo "Use configuration management instead of direct os.environ access"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        
+      # Verificar que los archivos de configuración estén presentes
+      - id: config-files-present
+        name: Verificar archivos de configuración
+        description: Verifica que los archivos de configuración necesarios estén presentes
+        entry: bash -c 'for file in requirements.txt Dockerfile .env.example; do if [ ! -f "$file" ]; then echo "Missing required file: $file"; exit 1; fi; done'
+        language: system
+        pass_filenames: false
+        
+      # Ejecutar tests rápidos antes del commit
+      - id: run-tests
+        name: Ejecutar tests rápidos
+        description: Ejecuta tests unitarios rápidos antes del commit
+        entry: pytest
+        language: system
+        args: ['-m', 'not slow', '--tb=short', '-q']
+        pass_filenames: false
+        stages: [commit]
+        
+# ============================================================================
+# CONFIGURACIÓN GLOBAL
+# ============================================================================
+
+# Configuración por defecto
+default_stages: [commit]
+
+# Configuración de CI
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+    
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
+
+# ============================================================================
+# NOTAS DE USO
+# ============================================================================
+#
+# Instalación inicial:
+#   pip install pre-commit
+#   pre-commit install
+#
+# Ejecutar en todos los archivos:
+#   pre-commit run --all-files
+#
+# Actualizar hooks:
+#   pre-commit autoupdate
+#
+# Saltarse hooks temporalmente:
+#   git commit --no-verify
+#
+# Ejecutar hook específico:
+#   pre-commit run black --all-files
+#
+# Desinstalar hooks:
+#   pre-commit uninstall
+#
+# ============================================================================

@@ -1,0 +1,17 @@
+[project]
+name = "odoo-addons-oca-product-variant"
+version = "18.0.20251016.0"
+dependencies = [
+    "odoo-addon-product_attribute_value_archive==18.0.*",
+    "odoo-addon-product_variant_change_attribute_value==18.0.*",
+    "odoo-addon-product_variant_configurator==18.0.*",
+    "odoo-addon-product_variant_default_code==18.0.*",
+    "odoo-addon-product_variant_sale_price==18.0.*",
+    "odoo-addon-sale_order_line_variant_description==18.0.*",
+    "odoo-addon-sale_variant_configurator==18.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 18.0",
+]

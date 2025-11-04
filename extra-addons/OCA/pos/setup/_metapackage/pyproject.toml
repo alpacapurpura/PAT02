@@ -1,0 +1,15 @@
+[project]
+name = "odoo-addons-oca-pos"
+version = "18.0.20250411.1"
+dependencies = [
+    "odoo-addon-pos_barcode_rule_priced_with_change_rate==18.0.*",
+    "odoo-addon-pos_display_order_number==18.0.*",
+    "odoo-addon-pos_display_total_quantity==18.0.*",
+    "odoo-addon-pos_divide_order_summary==18.0.*",
+    "odoo-addon-pos_lot_barcode==18.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 18.0",
+]

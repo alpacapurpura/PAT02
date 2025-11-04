@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <!-- Module Categories -->
+        <record id="module_category_patco" model="ir.module.category">
+            <field name="name">PATCO</field>
+            <field name="description">Sistema de Gestión de Activos PATCO</field>
+            <field name="sequence">20</field>
+        </record>
+        
+        <!-- Security Groups - Jerarquía de Roles PATCO -->
+        
+        <!-- 1. TÉCNICO - Acceso limitado a órdenes asignadas -->
+        <record id="group_patco_technician" model="res.groups">
+            <field name="name">PATCO Técnico</field>
+            <field name="category_id" ref="module_category_patco"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Técnico de campo con acceso limitado a sus órdenes asignadas</field>
+        </record>
+        
+        <!-- 2. JEFE DE OPERACIONES - Control operativo completo sin facturación -->
+        <record id="group_patco_operations_manager" model="res.groups">
+            <field name="name">PATCO Jefe de Operaciones</field>
+            <field name="category_id" ref="module_category_patco"/>
+            <field name="implied_ids" eval="[
+                (4, ref('group_patco_technician')),
+                (4, ref('sales_team.group_sale_salesman')),
+                (4, ref('hr.group_hr_user'))
+            ]"/>
+            <field name="comment">Gestión operativa completa: órdenes, tickets, activos, inventario (sin facturación)</field>
+        </record>
+        
+        <!-- 3. ADMINISTRATIVO - Acceso completo con facturación -->
+        <record id="group_patco_administrative" model="res.groups">
+            <field name="name">PATCO Administrativo</field>
+            <field name="category_id" ref="module_category_patco"/>
+            <field name="implied_ids" eval="[
+                (4, ref('group_patco_operations_manager')),
+                (4, ref('account.group_account_manager')),
+                (4, ref('sales_team.group_sale_manager'))
+            ]"/>
+            <field name="comment">Acceso administrativo completo incluyendo facturación y cobranza</field>
+        </record>
+        
+        <!-- 4. GERENTE GENERAL - Superusuario sin restricciones -->
+        <record id="group_patco_administrator" model="res.groups">
+            <field name="name">PATCO Gerente General</field>
+            <field name="category_id" ref="module_category_patco"/>
+            <field name="implied_ids" eval="[
+                (4, ref('group_patco_administrative')),
+                (4, ref('base.group_system'))
+            ]"/>
+            <field name="comment">Superusuario con acceso total al sistema PATCO</field>
+        </record>
+        
+        <!-- Grupos auxiliares para integración con módulos OCA -->
+        
+        <!-- Field Service Groups -->
+        <record id="fieldservice.group_fsm_user" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_patco_technician'))]"/>
+        </record>
+        
+        <record id="fieldservice.group_fsm_manager" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_patco_operations_manager'))]"/>
+        </record>
+        
+        <!-- Helpdesk Groups -->
+        <record id="helpdesk_mgmt.group_helpdesk_user" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_patco_operations_manager'))]"/>
+        </record>
+        
+        <!-- Maintenance Groups -->
+        <record id="maintenance.group_equipment_manager" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_patco_operations_manager'))]"/>
+        </record>
+        
+        <!-- Agreement Groups - Extending existing groups -->
+        <record id="agreement.group_use_agreement_type" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_patco_operations_manager'))]"/>
+        </record>
+        
+        <record id="agreement.group_use_agreement_template" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_patco_operations_manager'))]"/>
+        </record>
+        
+    </data>
+</odoo>

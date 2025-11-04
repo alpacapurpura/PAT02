@@ -1,0 +1,39 @@
+[project]
+name = "odoo-addons-oca-server-ux"
+version = "18.0.20250827.0"
+dependencies = [
+    "odoo-addon-announcement==18.0.*",
+    "odoo-addon-barcode_action==18.0.*",
+    "odoo-addon-base_cancel_confirm==18.0.*",
+    "odoo-addon-base_export_manager==18.0.*",
+    "odoo-addon-base_import_security_group==18.0.*",
+    "odoo-addon-base_menu_visibility_restriction==18.0.*",
+    "odoo-addon-base_optional_quick_create==18.0.*",
+    "odoo-addon-base_revision==18.0.*",
+    "odoo-addon-base_search_custom_field_filter==18.0.*",
+    "odoo-addon-base_substate==18.0.*",
+    "odoo-addon-base_technical_features==18.0.*",
+    "odoo-addon-base_tier_validation==18.0.*",
+    "odoo-addon-base_tier_validation_formula==18.0.*",
+    "odoo-addon-base_tier_validation_forward==18.0.*",
+    "odoo-addon-base_tier_validation_server_action==18.0.*",
+    "odoo-addon-chained_swapper==18.0.*",
+    "odoo-addon-date_range==18.0.*",
+    "odoo-addon-date_range_account==18.0.*",
+    "odoo-addon-default_multi_user==18.0.*",
+    "odoo-addon-developer_menu==18.0.*",
+    "odoo-addon-document_quick_access==18.0.*",
+    "odoo-addon-filter_multi_user==18.0.*",
+    "odoo-addon-mail_message_destiny_link_template==18.0.*",
+    "odoo-addon-multi_step_wizard==18.0.*",
+    "odoo-addon-sequence_check_digit==18.0.*",
+    "odoo-addon-sequence_reset_period==18.0.*",
+    "odoo-addon-server_action_mass_edit==18.0.*",
+    "odoo-addon-server_action_mass_edit_onchange==18.0.*",
+    "odoo-addon-template_content_swapper==18.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 18.0",
+]

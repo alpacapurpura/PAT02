@@ -1,0 +1,161 @@
+# Dependencias de desarrollo para el Servidor MCP
+# ===============================================
+#
+# Este archivo contiene las dependencias necesarias para el desarrollo,
+# testing y mantenimiento del servidor MCP.
+#
+# Instalación:
+#   pip install -r requirements-dev.txt
+#
+# Autor: PATCO Development Team
+# Versión: 1.0.0
+# Fecha: Enero 2025
+
+# ============================================================================
+# TESTING
+# ============================================================================
+
+# Framework de testing principal
+pytest>=7.4.0
+pytest-asyncio>=0.21.0          # Soporte para tests async
+pytest-cov>=4.1.0               # Cobertura de código
+pytest-mock>=3.11.0             # Mocking avanzado
+pytest-timeout>=2.1.0           # Timeout para tests
+pytest-xdist>=3.3.0             # Ejecución paralela de tests
+pytest-html>=3.2.0              # Reportes HTML
+pytest-json-report>=1.5.0       # Reportes JSON
+pytest-benchmark>=4.0.0         # Benchmarking
+pytest-watch>=4.2.0             # Auto-ejecución de tests
+
+# Mocking y fixtures
+factory-boy>=3.3.0              # Factories para tests
+faker>=19.0.0                   # Datos falsos para tests
+responses>=0.23.0               # Mock de requests HTTP
+httpx>=0.24.0                   # Cliente HTTP async para tests
+
+# Testing de APIs
+testcontainers>=3.7.0           # Contenedores para tests de integración
+
+# ============================================================================
+# CALIDAD DE CÓDIGO
+# ============================================================================
+
+# Formateo de código
+black>=23.7.0                   # Formateador de código
+isort>=5.12.0                   # Ordenamiento de imports
+
+# Linting y análisis estático
+flake8>=6.0.0                   # Linter principal
+flake8-docstrings>=1.7.0        # Verificación de docstrings
+flake8-import-order>=0.18.2     # Orden de imports
+flake8-bugbear>=23.7.0          # Detección de bugs comunes
+flake8-comprehensions>=3.14.0   # Mejores comprehensions
+flake8-simplify>=0.20.0         # Simplificación de código
+flake8-bandit>=4.1.1            # Seguridad
+
+# Análisis avanzado
+pylint>=2.17.0                  # Linter avanzado
+mypy>=1.5.0                     # Type checking
+bandit>=1.7.5                   # Análisis de seguridad
+safety>=2.3.0                   # Vulnerabilidades en dependencias
+
+# ============================================================================
+# DOCUMENTACIÓN
+# ============================================================================
+
+# Generación de documentación
+sphinx>=7.1.0                   # Generador de documentación
+sphinx-rtd-theme>=1.3.0         # Tema Read the Docs
+sphinx-autodoc-typehints>=1.24.0 # Type hints en docs
+mkdocs>=1.5.0                   # Documentación alternativa
+mkdocs-material>=9.1.0          # Tema Material para MkDocs
+
+# ============================================================================
+# DESARROLLO
+# ============================================================================
+
+# Debugging y profiling
+ipdb>=0.13.13                   # Debugger mejorado
+line-profiler>=4.1.0            # Profiling línea por línea
+memory-profiler>=0.61.0         # Profiling de memoria
+py-spy>=0.3.14                  # Profiler de producción
+
+# Herramientas de desarrollo
+pre-commit>=3.3.0               # Git hooks
+commitizen>=3.6.0               # Commits semánticos
+bumpversion>=0.6.0              # Versionado automático
+
+# Monitoreo y observabilidad
+watchdog>=3.0.0                 # File system events
+
+# ============================================================================
+# UTILIDADES
+# ============================================================================
+
+# Análisis de dependencias
+pipdeptree>=2.13.0              # Árbol de dependencias
+pip-audit>=2.6.0                # Auditoría de seguridad
+
+# Herramientas de CLI
+click>=8.1.0                    # CLI framework
+rich>=13.5.0                    # Output colorido
+tabulate>=0.9.0                 # Tablas en CLI
+
+# Validación de datos para tests
+cerberus>=1.3.4                 # Validación de esquemas
+jsonschema>=4.19.0              # Validación JSON Schema
+
+# ============================================================================
+# JUPYTER Y NOTEBOOKS (OPCIONAL)
+# ============================================================================
+
+# Jupyter para análisis y debugging
+jupyter>=1.0.0                  # Jupyter notebooks
+jupyterlab>=4.0.0               # JupyterLab
+ipywidgets>=8.1.0               # Widgets interactivos
+
+# ============================================================================
+# PERFORMANCE Y BENCHMARKING
+# ============================================================================
+
+# Herramientas de performance
+locust>=2.16.0                  # Load testing
+pytest-benchmark>=4.0.0         # Benchmarking (duplicado arriba)
+
+# ============================================================================
+# CONFIGURACIÓN ESPECÍFICA
+# ============================================================================
+
+# Variables de entorno para desarrollo
+python-dotenv>=1.0.0            # Manejo de .env files
+
+# Herramientas de base de datos para tests
+alembic>=1.12.0                 # Migraciones de DB
+sqlalchemy-utils>=0.41.0        # Utilidades para SQLAlchemy
+
+# ============================================================================
+# INTEGRACIÓN CONTINUA
+# ============================================================================
+
+# Herramientas para CI/CD
+coverage>=7.3.0                 # Cobertura de código
+coveralls>=3.3.1                # Integración con Coveralls
+codecov>=2.1.13                 # Integración con Codecov
+
+# ============================================================================
+# NOTAS DE INSTALACIÓN
+# ============================================================================
+#
+# Para instalar todas las dependencias de desarrollo:
+#   pip install -r requirements.txt -r requirements-dev.txt
+#
+# Para instalar solo las herramientas básicas de desarrollo:
+#   pip install pytest black flake8 mypy
+#
+# Para configurar pre-commit hooks:
+#   pre-commit install
+#
+# Para ejecutar todos los checks de calidad:
+#   make ci
+#
+# ============================================================================

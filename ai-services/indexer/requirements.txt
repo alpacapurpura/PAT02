@@ -1,0 +1,25 @@
+# PATCO AI Agent - Document Indexer Requirements
+# Dependencias para el servicio de indexación de documentos
+
+# Core dependencies
+asyncio
+psycopg2-binary>=2.9.0
+requests>=2.28.0
+
+# Document processing
+PyPDF2>=3.0.0
+Pillow>=9.0.0
+python-magic>=0.4.27
+
+# OCR (opcional pero recomendado)
+pytesseract>=0.3.10
+
+# Utilities
+numpy>=1.21.0
+
+# Logging and monitoring
+structlog>=22.0.0
+
+# Development and testing (opcional)
+pytest>=7.0.0
+pytest-asyncio>=0.21.0

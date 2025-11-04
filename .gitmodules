@@ -1,0 +1,219 @@
+[submodule "extra-addons/OCA/web"]
+	path = extra-addons/OCA/web
+	url = https://github.com/OCA/web.git
+[submodule "extra-addons/OCA/maintenance"]
+	path = extra-addons/OCA/maintenance
+	url = https://github.com/OCA/maintenance.git
+[submodule "extra-addons/OCA/project"]
+	path = extra-addons/OCA/project
+	url = https://github.com/OCA/project.git
+[submodule "extra-addons/OCA/account-payment"]
+	path = extra-addons/OCA/account-payment
+	url = https://github.com/OCA/account-payment.git
+	branch = 18.0
+[submodule "extra-addons/OCA/reporting-engine"]
+	path = extra-addons/OCA/reporting-engine
+	url = https://github.com/OCA/reporting-engine.git
+[submodule "extra-addons/OCA/server-env"]
+	path = extra-addons/OCA/server-env
+	url = https://github.com/OCA/server-env.git
+[submodule "extra-addons/OCA/field-service"]
+	path = extra-addons/OCA/field-service
+	url = https://github.com/OCA/field-service.git
+[submodule "extra-addons/OCA/partner-contact"]
+	path = extra-addons/OCA/partner-contact
+	url = https://github.com/OCA/partner-contact.git
+[submodule "extra-addons/OCA/hr"]
+	path = extra-addons/OCA/hr
+	url = https://github.com/OCA/hr.git
+[submodule "extra-addons/OCA/helpdesk"]
+	path = extra-addons/OCA/helpdesk
+	url = https://github.com/OCA/helpdesk.git
+[submodule "extra-addons/OCA/agreement"]
+	path = extra-addons/OCA/agreement
+	url = https://github.com/OCA/agreement.git
+[submodule "extra-addons/OCA/fieldservice_skill"]
+	path = extra-addons/OCA/fieldservice_skill
+	url = https://github.com/HeliconiaIO/field-service.git
+	branch = 18.0-mig-fieldservice_skill
+[submodule "extra-addons/OCA/mail"]
+	path = extra-addons/OCA/mail
+	url = https://github.com/OCA/mail.git
+[submodule "extra-addons/OCA/server-brand"]
+	path = extra-addons/OCA/server-brand
+	url = https://github.com/OCA/server-brand.git
+[submodule "extra-addons/OCA/server-tool"]
+	path = extra-addons/OCA/server-tool
+	url = https://github.com/OCA/server-tools.git
+[submodule "extra-addons/OCA/hr-attendance"]
+	path = extra-addons/OCA/hr-attendance
+	url = https://github.com/OCA/hr-attendance.git
+	branch = 18.0
+[submodule "extra-addons/OCA/contract"]
+	path = extra-addons/OCA/contract
+	url = https://github.com/OCA/contract.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-workflow"]
+	path = extra-addons/OCA/stock-logistics-workflow
+	url = https://github.com/OCA/stock-logistics-workflow.git
+	branch = 18.0
+[submodule "extra-addons/OCA/bank-statement-import"]
+	path = extra-addons/OCA/bank-statement-import
+	url = https://github.com/OCA/bank-statement-import.git
+	branch = 18.0
+[submodule "extra-addons/OCA/account-closing"]
+	path = extra-addons/OCA/account-closing
+	url = https://github.com/OCA/account-closing.git
+	branch = 18.0
+[submodule "extra-addons/OCA/knowledge"]
+	path = extra-addons/OCA/knowledge
+	url = https://github.com/OCA/knowledge.git
+	branch = 18.0
+[submodule "extra-addons/OCA/hr-holidays"]
+	path = extra-addons/OCA/hr-holidays
+	url = https://github.com/OCA/hr-holidays.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-warehouse"]
+	path = extra-addons/OCA/stock-logistics-warehouse
+	url = https://github.com/OCA/stock-logistics-warehouse.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-request"]
+	path = extra-addons/OCA/stock-logistics-request
+	url = https://github.com/OCA/stock-logistics-request.git
+	branch = 18.0
+[submodule "extra-addons/OCA/product-variant"]
+	path = extra-addons/OCA/product-variant
+	url = https://github.com/OCA/product-variant.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-barcode"]
+	path = extra-addons/OCA/stock-logistics-barcode
+	url = https://github.com/OCA/stock-logistics-barcode.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-putaway"]
+	path = extra-addons/OCA/stock-logistics-putaway
+	url = https://github.com/OCA/stock-logistics-putaway.git
+	branch = 18.0
+[submodule "extra-addons/OCA/bank-payment"]
+	path = extra-addons/OCA/bank-payment
+	url = https://github.com/OCA/bank-payment.git
+	branch = 18.0
+[submodule "extra-addons/OCA/account-financial-tools"]
+	path = extra-addons/OCA/account-financial-tools
+	url = https://github.com/OCA/account-financial-tools.git
+	branch = 18.0
+[submodule "extra-addons/OCA/timesheet"]
+	path = extra-addons/OCA/timesheet
+	url = https://github.com/OCA/timesheet.git
+	branch = 18.0
+[submodule "extra-addons/OCA/payroll"]
+	path = extra-addons/OCA/payroll
+	url = https://github.com/OCA/payroll.git
+	branch = 18.0
+[submodule "extra-addons/OCA/product-attribute"]
+	path = extra-addons/OCA/product-attribute
+	url = https://github.com/OCA/product-attribute.git
+	branch = 18.0
+[submodule "extra-addons/OCA/queue"]
+	path = extra-addons/OCA/queue
+	url = https://github.com/OCA/queue.git
+	branch = 18.0
+[submodule "extra-addons/OCA/account-invoicing"]
+	path = extra-addons/OCA/account-invoicing
+	url = https://github.com/OCA/account-invoicing.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-weighing"]
+	path = extra-addons/OCA/stock-weighing
+	url = https://github.com/OCA/stock-weighing.git
+	branch = 18.0
+[submodule "extra-addons/OCA/account-consolidation"]
+	path = extra-addons/OCA/account-consolidation
+	url = https://github.com/OCA/account-consolidation.git
+	branch = 18.0
+[submodule "extra-addons/OCA/fleet"]
+	path = extra-addons/OCA/fleet
+	url = https://github.com/OCA/fleet.git
+	branch = 18.0
+[submodule "extra-addons/OCA/bank-payment-alternative"]
+	path = extra-addons/OCA/bank-payment-alternative
+	url = https://github.com/OCA/bank-payment-alternative.git
+	branch = 18.0
+[submodule "extra-addons/OCA/sale-channel"]
+	path = extra-addons/OCA/sale-channel
+	url = https://github.com/OCA/sale-channel.git
+	branch = 18.0
+[submodule "extra-addons/OCA/connector"]
+	path = extra-addons/OCA/connector
+	url = https://github.com/OCA/connector.git
+	branch = 18.0
+[submodule "extra-addons/OCA/sale-workflow"]
+	path = extra-addons/OCA/sale-workflow
+	url = https://github.com/OCA/sale-workflow.git
+	branch = 18.0
+[submodule "extra-addons/OCA/purchase-workflow"]
+	path = extra-addons/OCA/purchase-workflow
+	url = https://github.com/OCA/purchase-workflow.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-release-channel"]
+	path = extra-addons/OCA/stock-logistics-release-channel
+	url = https://github.com/OCA/stock-logistics-release-channel.git
+	branch = 18.0
+[submodule "extra-addons/OCA/dms"]
+	path = extra-addons/OCA/dms
+	url = https://github.com/OCA/dms.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-tracking"]
+	path = extra-addons/OCA/stock-logistics-tracking
+	url = https://github.com/OCA/stock-logistics-tracking.git
+	branch = 18.0
+[submodule "extra-addons/OCA/product-pack"]
+	path = extra-addons/OCA/product-pack
+	url = https://github.com/OCA/product-pack.git
+	branch = 18.0
+[submodule "extra-addons/OCA/connector-woocommerce"]
+	path = extra-addons/OCA/connector-woocommerce
+	url = https://github.com/OCA/connector-woocommerce.git
+	branch = 18.0
+[submodule "extra-addons/OCA/account-financial-reporting"]
+	path = extra-addons/OCA/account-financial-reporting
+	url = https://github.com/OCA/account-financial-reporting.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-reservation"]
+	path = extra-addons/OCA/stock-logistics-reservation
+	url = https://github.com/OCA/stock-logistics-reservation.git
+	branch = 18.0
+[submodule "extra-addons/OCA/server-ux"]
+	path = extra-addons/OCA/server-ux
+	url = https://github.com/OCA/server-ux.git
+	branch = 18.0
+[submodule "extra-addons/OCA/pos"]
+	path = extra-addons/OCA/pos
+	url = https://github.com/OCA/pos.git
+	branch = 18.0
+[submodule "extra-addons/OCA/hr-expense"]
+	path = extra-addons/OCA/hr-expense
+	url = https://github.com/OCA/hr-expense.git
+	branch = 18.0
+[submodule "extra-addons/OCA/purchase-reporting"]
+	path = extra-addons/OCA/purchase-reporting
+	url = https://github.com/OCA/purchase-reporting.git
+	branch = 18.0
+[submodule "extra-addons/OCA/stock-logistics-availability"]
+	path = extra-addons/OCA/stock-logistics-availability
+	url = https://github.com/OCA/stock-logistics-availability.git
+	branch = 18.0
+[submodule "extra-addons/OCA/credit-control"]
+	path = extra-addons/OCA/credit-control
+	url = https://github.com/OCA/credit-control.git
+	branch = 18.0
+[submodule "extra-addons/OCA/sale-blanket"]
+	path = extra-addons/OCA/sale-blanket
+	url = https://github.com/OCA/sale-blanket.git
+	branch = 18.0
+[submodule "extra-addons/OCA/account-reconcile"]
+	path = extra-addons/OCA/account-reconcile
+	url = https://github.com/OCA/account-reconcile.git
+	branch = 18.0
+[submodule "extra-addons/OCA/calendar"]
+	path = extra-addons/OCA/calendar
+	url = https://github.com/OCA/calendar.git
+	branch = 18.0

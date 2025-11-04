@@ -1,0 +1,20 @@
+[project]
+name = "odoo-addons-oca-bank-payment-alternative"
+version = "18.0.20250917.0"
+dependencies = [
+    "odoo-addon-account_payment_base_oca==18.0.*",
+    "odoo-addon-account_payment_base_oca_sale==18.0.*",
+    "odoo-addon-account_payment_batch_oca==18.0.*",
+    "odoo-addon-account_payment_batch_oca_reconcile==18.0.*",
+    "odoo-addon-account_payment_batch_oca_tier_validation==18.0.*",
+    "odoo-addon-account_payment_mandate==18.0.*",
+    "odoo-addon-account_payment_mandate_sale==18.0.*",
+    "odoo-addon-account_payment_sepa_base==18.0.*",
+    "odoo-addon-account_payment_sepa_credit_transfer==18.0.*",
+    "odoo-addon-account_payment_sepa_direct_debit==18.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 18.0",
+]

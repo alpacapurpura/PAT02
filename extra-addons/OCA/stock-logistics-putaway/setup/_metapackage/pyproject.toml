@@ -1,0 +1,15 @@
+[project]
+name = "odoo-addons-oca-stock-logistics-putaway"
+version = "18.0.20250827.0"
+dependencies = [
+    "odoo-addon-stock_picking_putaway_recompute==18.0.*",
+    "odoo-addon-stock_putaway_hook==18.0.*",
+    "odoo-addon-stock_storage_type==18.0.*",
+    "odoo-addon-stock_storage_type_buffer==18.0.*",
+    "odoo-addon-stock_storage_type_putaway_abc==18.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 18.0",
+]

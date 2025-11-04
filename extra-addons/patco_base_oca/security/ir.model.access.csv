@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_patco_service_nature_user,patco.service.nature.user,model_patco_service_nature,base.group_user,1,0,0,0
+access_patco_service_area_user,patco.service.area.user,model_patco_service_area,base.group_user,1,0,0,0
+access_patco_service_complexity_user,patco.service.complexity.user,model_patco_service_complexity,base.group_user,1,0,0,0
+access_patco_service_nature_technician,patco.service.nature.technician,model_patco_service_nature,group_patco_technician,1,0,0,0
+access_patco_service_area_technician,patco.service.area.technician,model_patco_service_area,group_patco_technician,1,0,0,0
+access_patco_service_complexity_technician,patco.service.complexity.technician,model_patco_service_complexity,group_patco_technician,1,0,0,0
+access_patco_service_nature_ops_manager,patco.service.nature.ops.manager,model_patco_service_nature,group_patco_operations_manager,1,1,1,0
+access_patco_service_area_ops_manager,patco.service.area.ops.manager,model_patco_service_area,group_patco_operations_manager,1,1,1,0
+access_patco_service_complexity_ops_manager,patco.service.complexity.ops.manager,model_patco_service_complexity,group_patco_operations_manager,1,1,1,0
+access_patco_service_nature_administrative,patco.service.nature.administrative,model_patco_service_nature,group_patco_administrative,1,1,1,1
+access_patco_service_area_administrative,patco.service.area.administrative,model_patco_service_area,group_patco_administrative,1,1,1,1
+access_patco_service_complexity_administrative,patco.service.complexity.administrative,model_patco_service_complexity,group_patco_administrative,1,1,1,1
+access_patco_service_nature_admin,patco.service.nature.admin,model_patco_service_nature,group_patco_administrator,1,1,1,1
+access_patco_service_area_admin,patco.service.area.admin,model_patco_service_area,group_patco_administrator,1,1,1,1
+access_patco_service_complexity_admin,patco.service.complexity.admin,model_patco_service_complexity,group_patco_administrator,1,1,1,1

@@ -1,0 +1,301 @@
+# ===================================================================
+# Docker Compose Unificado - PATCO Suite
+# Perfiles: development y production
+# ===================================================================
+# Redes separadas, volúmenes separados, Traefik solo en desarrollo.
+
+services:
+  # ===== TRAEFIK (SOLO DESARROLLO) =====
+  traefik:
+    profiles: ["development"]
+    image: traefik:v3.0
+    container_name: patco-traefik-dev
+    command:
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=odoo-network-dev
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websocket.address=:8072
+      - --log.level=INFO
+      - --accesslog=true
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - odoo-network-dev
+    restart: unless-stopped
+
+  # ===== DB (DESARROLLO) =====
+  db-dev:
+    profiles: ["development"]
+    build:
+      context: ./ai-services/postgres-pgvector
+      dockerfile: Dockerfile
+    container_name: odoo-patco-db
+    environment:
+      POSTGRES_DB: odoo_patco
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: P4tc0_2
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data-dev:/var/lib/postgresql/data/pgdata
+    networks:
+      odoo-network-dev:
+        aliases:
+          - db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d odoo_patco"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # Inicializa DB secundaria (andessuyo) en dev
+  db-init-andessuyo-dev:
+    profiles: ["development"]
+    image: postgres:15
+    depends_on:
+      db-dev:
+        condition: service_healthy
+    networks:
+      - odoo-network-dev
+    environment:
+      PGHOST: db-dev
+      PGPORT: 5432
+      PGUSER: odoo
+      PGPASSWORD: P4tc0_2
+      PGDATABASE: postgres
+    command: >
+      bash -c "
+        until psql -lqt > /dev/null 2>&1; do
+          sleep 2
+        done
+        if psql -lqt | cut -d'|' -f 1 | grep -qw odoo_andessuyo; then
+          echo 'DB odoo_andessuyo existe.'
+        else
+          createdb -O odoo odoo_andessuyo
+        fi
+      "
+    restart: "no"
+
+  # ===== ODOO PATCO (DEV) =====
+  odoo-patco-dev:
+    profiles: ["development"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-patco-app
+    depends_on:
+      db-init-andessuyo-dev:
+        condition: service_completed_successfully
+      traefik:
+        condition: service_started
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    environment:
+      DB_HOST: db-dev
+      DB_PORT: 5432
+      ODOO_RC: /etc/odoo/odoo.conf
+    volumes:
+      - patco-web-data-dev:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+      - ./logs:/var/log/odoo
+    networks:
+      - odoo-network-dev
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=odoo-network-dev"
+      - "traefik.http.routers.odoo-patco-dev.rule=Host(`patco.local`)"
+      - "traefik.http.routers.odoo-patco-dev.entrypoints=web"
+      - "traefik.http.routers.odoo-patco-dev.service=odoo-web-patco-dev"
+      - "traefik.http.services.odoo-web-patco-dev.loadbalancer.server.port=8069"
+      - "traefik.http.routers.odoo-websocket-patco-dev.rule=Host(`patco.local`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.odoo-websocket-patco-dev.entrypoints=web"
+      - "traefik.http.routers.odoo-websocket-patco-dev.service=odoo-websocket-patco-dev"
+      - "traefik.http.services.odoo-websocket-patco-dev.loadbalancer.server.port=8072"
+
+  # ===== ODOO ANDESSUYO (DEV) =====
+  odoo-andessuyo-dev:
+    profiles: ["development"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-andessuyo-app
+    depends_on:
+      db-init-andessuyo-dev:
+        condition: service_completed_successfully
+      traefik:
+        condition: service_started
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    environment:
+      DB_HOST: db-dev
+      DB_PORT: 5432
+      ODOO_RC: /etc/odoo/odoo.conf
+    volumes:
+      - andessuyo-web-data-dev:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+      - ./logs:/var/log/odoo
+    networks:
+      - odoo-network-dev
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=odoo-network-dev"
+      - "traefik.http.routers.odoo-andessuyo-dev.rule=Host(`andessuyo.local`)"
+      - "traefik.http.routers.odoo-andessuyo-dev.entrypoints=web"
+      - "traefik.http.routers.odoo-andessuyo-dev.service=odoo-web-andessuyo-dev"
+      - "traefik.http.services.odoo-web-andessuyo-dev.loadbalancer.server.port=8069"
+      - "traefik.http.routers.odoo-websocket-andessuyo-dev.rule=Host(`andessuyo.local`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.odoo-websocket-andessuyo-dev.entrypoints=web"
+      - "traefik.http.routers.odoo-websocket-andessuyo-dev.service=odoo-websocket-andessuyo-dev"
+      - "traefik.http.services.odoo-websocket-andessuyo-dev.loadbalancer.server.port=8072"
+
+  # ===== DB (PRODUCCIÓN) =====
+  db-prod:
+    profiles: ["production"]
+    build:
+      context: ./ai-services/postgres-pgvector
+      dockerfile: Dockerfile
+    container_name: odoo-db-prod
+    environment:
+      POSTGRES_DB: odoo_patco
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: P4tc0_2
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data-prod:/var/lib/postgresql/data/pgdata
+    networks:
+      - odoo-network-prod
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d odoo_patco"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  db-init-andessuyo-prod:
+    profiles: ["production"]
+    image: postgres:15
+    depends_on:
+      db-prod:
+        condition: service_healthy
+    networks:
+      - odoo-network-prod
+    environment:
+      PGHOST: db-prod
+      PGPORT: 5432
+      PGUSER: odoo
+      PGPASSWORD: P4tc0_2
+      PGDATABASE: postgres
+    command: >
+      bash -c "
+        until psql -lqt > /dev/null 2>&1; do
+          sleep 2
+        done
+        if psql -lqt | cut -d'|' -f 1 | grep -qw odoo_andessuyo; then
+          echo 'DB odoo_andessuyo existe.'
+        else
+          createdb -O odoo odoo_andessuyo
+        fi
+      "
+    restart: "no"
+
+  # ===== ODOO PATCO (PROD) =====
+  odoo-patco-prod:
+    profiles: ["production"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-patco-app-prod
+    depends_on:
+      db-init-andessuyo-prod:
+        condition: service_completed_successfully
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=patco_base", "--load-language=es_PE", "--without-demo=all"]
+    environment:
+      DB_HOST: db-prod
+      DB_PORT: 5432
+      ODOO_RC: /etc/odoo/odoo.conf
+    volumes:
+      - patco-web-data-prod:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+      - ./logs:/var/log/odoo
+    networks:
+      - odoo-network-prod
+      - web_gateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web_gateway"
+      - "traefik.http.routers.odoo-patco-prod.rule=Host(`erp.patcoperu.com`)"
+      - "traefik.http.routers.odoo-patco-prod.entrypoints=websecure"
+      - "traefik.http.routers.odoo-patco-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.services.odoo-web-patco-prod.loadbalancer.server.port=8069"
+      - "traefik.http.routers.odoo-patco-websocket-prod.rule=Host(`erp.patcoperu.com`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.odoo-patco-websocket-prod.entrypoints=websecure"
+      - "traefik.http.routers.odoo-patco-websocket-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.services.odoo-websocket-patco-prod.loadbalancer.server.port=8072"
+
+  # ===== ODOO ANDESSUYO (PROD) =====
+  odoo-andessuyo-prod:
+    profiles: ["production"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-andessuyo-app-prod
+    depends_on:
+      db-init-andessuyo-prod:
+        condition: service_completed_successfully
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=andessuyo_base", "--load-language=es_PE", "--without-demo=all"]
+    environment:
+      DB_HOST: db-prod
+      DB_PORT: 5432
+      ODOO_RC: /etc/odoo/odoo.conf
+    volumes:
+      - andessuyo-web-data-prod:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+      - ./logs:/var/log/odoo
+    networks:
+      - odoo-network-prod
+      - web_gateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web_gateway"
+      - "traefik.http.routers.odoo-andessuyo-prod.rule=Host(`erp.andessuyo.com`)"
+      - "traefik.http.routers.odoo-andessuyo-prod.entrypoints=websecure"
+      - "traefik.http.routers.odoo-andessuyo-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.services.odoo-web-andessuyo-prod.loadbalancer.server.port=8069"
+      - "traefik.http.routers.odoo-andessuyo-websocket-prod.rule=Host(`erp.andessuyo.com`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.odoo-andessuyo-websocket-prod.entrypoints=websecure"
+      - "traefik.http.routers.odoo-andessuyo-websocket-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.services.odoo-websocket-andessuyo-prod.loadbalancer.server.port=8072"
+
+volumes:
+  patco-web-data-dev:
+    name: odoo-patco-web-data-dev
+  andessuyo-web-data-dev:
+    name: odoo-andessuyo-web-data-dev
+  patco-web-data-prod:
+    name: odoo-patco-web-data-prod
+  andessuyo-web-data-prod:
+    name: odoo-andessuyo-web-data-prod
+  odoo-db-data-dev:
+    name: odoo-patco-db-data-dev
+  odoo-db-data-prod:
+    name: odoo-patco-db-data-prod
+
+networks:
+  odoo-network-dev:
+    name: odoo-network-dev
+    driver: bridge
+  odoo-network-prod:
+    name: odoo-patco-network-prod
+    driver: bridge
+  web_gateway:
+    external: true

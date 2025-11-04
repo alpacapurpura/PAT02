@@ -1,0 +1,516 @@
+# ============================================================================
+# GITIGNORE PARA SERVIDOR MCP
+# ============================================================================
+#
+# Este archivo especifica qué archivos y directorios deben ser ignorados
+# por Git para el proyecto del Servidor MCP.
+#
+# Autor: PATCO Development Team
+# Versión: 1.0.0
+# Fecha: Enero 2025
+#
+# ============================================================================
+
+# ============================================================================
+# ARCHIVOS DE CONFIGURACIÓN SENSIBLES
+# ============================================================================
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+.env.test
+
+# Archivos de configuración con credenciales
+config.ini
+config.yaml
+config.json
+secrets.json
+credentials.json
+
+# Claves y certificados
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+jwt_keys/
+certs/
+
+# ============================================================================
+# PYTHON
+# ============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# ============================================================================
+# LOGS Y ARCHIVOS TEMPORALES
+# ============================================================================
+
+# Logs
+logs/
+*.log
+*.log.*
+log/
+
+# Archivos temporales
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Archivos de respaldo
+*.bak
+*.backup
+*.orig
+
+# ============================================================================
+# BASES DE DATOS
+# ============================================================================
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+*.db3
+
+# Dumps de base de datos
+*.sql
+*.dump
+*.backup
+
+# Archivos de migración temporales
+migrations/versions/*.pyc
+
+# ============================================================================
+# CACHÉ Y ALMACENAMIENTO
+# ============================================================================
+
+# Directorios de caché
+cache/
+.cache/
+__pycache__/
+
+# Archivos de almacenamiento
+storage/
+uploads/
+downloads/
+files/
+data/
+
+# Modelos de embeddings
+models/
+embeddings/
+vectors/
+
+# ============================================================================
+# DESARROLLO Y HERRAMIENTAS
+# ============================================================================
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.un~
+Session.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ============================================================================
+# DOCKER
+# ============================================================================
+
+# Docker
+.dockerignore
+Dockerfile.local
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Volúmenes de Docker
+volumes/
+
+# ============================================================================
+# SISTEMA OPERATIVO
+# ============================================================================
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================================================
+# HERRAMIENTAS DE ANÁLISIS Y TESTING
+# ============================================================================
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+
+# Pytest
+.pytest_cache/
+
+# Bandit security reports
+bandit-report.json
+bandit-report.txt
+
+# Safety reports
+safety-report.json
+safety-report.txt
+
+# Profiling
+*.prof
+profiles/
+.prof/
+
+# Benchmarking
+benchmarks/
+.benchmarks/
+
+# ============================================================================
+# DOCUMENTACIÓN
+# ============================================================================
+
+# Sphinx
+docs/_build/
+docs/build/
+
+# MkDocs
+site/
+
+# Jupyter Book
+_build/
+
+# ============================================================================
+# DEPENDENCIAS Y PAQUETES
+# ============================================================================
+
+# Node.js (si se usa para herramientas de desarrollo)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+
+# ============================================================================
+# ARCHIVOS ESPECÍFICOS DEL PROYECTO MCP
+# ============================================================================
+
+# Archivos de estado del servidor
+server.pid
+mcp.pid
+*.pid
+
+# Archivos de socket
+*.sock
+*.socket
+
+# Archivos de configuración de desarrollo
+dev-config.json
+local-config.yaml
+
+# Datos de prueba generados
+test-data/
+fixtures/generated/
+
+# Archivos de métricas
+metrics/
+prometheus/
+
+# Archivos de monitoreo
+monitoring/
+health-checks/
+
+# ============================================================================
+# ARCHIVOS DE INTEGRACIÓN CONTINUA
+# ============================================================================
+
+# GitHub Actions (mantener solo los necesarios)
+# .github/workflows/*.yml (comentado para mantener workflows)
+
+# GitLab CI
+# .gitlab-ci.yml (comentado para mantener CI)
+
+# Jenkins
+Jenkinsfile.local
+
+# ============================================================================
+# ARCHIVOS DE DESPLIEGUE
+# ============================================================================
+
+# Kubernetes
+k8s/secrets/
+k8s/local/
+*.kubeconfig
+
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+
+# Ansible
+*.retry
+vault_pass.txt
+
+# ============================================================================
+# ARCHIVOS DE MONITOREO Y OBSERVABILIDAD
+# ============================================================================
+
+# Jaeger traces
+traces/
+
+# Prometheus data
+prometheus_data/
+
+# Grafana data
+grafana_data/
+
+# ============================================================================
+# EXCEPCIONES (ARCHIVOS QUE SÍ QUEREMOS VERSIONAR)
+# ============================================================================
+
+# Mantener archivos de ejemplo
+!.env.example
+!config.example.json
+!docker-compose.example.yml
+
+# Mantener archivos de configuración de herramientas
+!.pre-commit-config.yaml
+!.flake8
+!.isort.cfg
+!pyproject.toml
+!setup.cfg
+
+# Mantener archivos de CI/CD
+!.github/
+!.gitlab-ci.yml
+
+# Mantener documentación
+!README.md
+!CHANGELOG.md
+!CONTRIBUTING.md
+!LICENSE
+
+# Mantener archivos de Docker para desarrollo
+!Dockerfile
+!docker-compose.yml
+!.dockerignore
+
+# ============================================================================
+# NOTAS
+# ============================================================================
+#
+# Este .gitignore está diseñado para:
+# 1. Proteger información sensible (credenciales, claves)
+# 2. Evitar archivos temporales y de caché
+# 3. Mantener el repositorio limpio y enfocado
+# 4. Facilitar el desarrollo en diferentes entornos
+#
+# Recuerda:
+# - Nunca commitees archivos con credenciales
+# - Usa .env.example para mostrar la estructura de variables
+# - Mantén este archivo actualizado con nuevos patrones
+#
+# ============================================================================

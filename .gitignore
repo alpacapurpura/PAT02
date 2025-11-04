@@ -1,0 +1,92 @@
+# Proyecto Odoo: .gitignore optimizado para reducir tamaño del repositorio
+
+# 1) Directorios de build de documentación (Sphinx)
+_build/
+
+# 2) Dotfiles (mantener excepciones necesarias)
+.*
+!.gitignore
+!.github
+!.mailmap
+!.weblate.json
+
+# 3) Python compilado y metadatos
+*.py[co]
+*.pyd
+__pycache__/
+*.egg-info
+*.egg
+.eggs/
+
+# 4) Archivos temporales y de respaldo
+*~
+*.swp
+*.swo
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+
+# 5) Odoo: filestore y scripts de mantenimiento
+odoo/filestore
+odoo/addons/base/maintenance
+
+# 6) Configuración específica de instalación en Windows
+/config/odoo.conf
+
+# 7) Artefactos de instalador Windows
+install/win32/*.bat
+install/win32/meta.py
+setup/win32/static/less/
+setup/win32/static/wkhtmltopdf/
+setup/win32/static/postgresql*.exe
+
+# 8) Tooling JS (evitar bundle pesado y locks)
+node_modules
+jsconfig.json
+tsconfig.json
+package-lock.json
+package.json
+.husky
+
+# 9) Entornos virtuales y artefactos de build
+/bin/
+/build/
+/dist/
+/include/
+/lib/
+/man/
+/share/
+/src/
+.venv/
+venv/
+.python-version
+
+# 10) Logs y depuración
+logs/
+*.log
+
+# 11) Caches de herramientas y pruebas
+.tox/
+.pytest_cache/
+.coverage*
+coverage.xml
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# 12) IDE y SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 13) Bases de datos y dumps
+*.sqlite
+*.db
+*.sql
+*.dump
+
+# 14) Artefactos de respaldo propio del proyecto
+.backup-code/
