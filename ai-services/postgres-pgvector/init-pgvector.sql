@@ -54,4 +54,16 @@ LANGUAGE SQL STABLE AS $$
 $$;
 
 -- Trigger para actualizar updated_at
-CREATE OR REPLACE FUNCTION
+CREATE OR REPLACE FUNCTION update_ai_document_embeddings_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS ai_document_embeddings_set_updated_at ON ai_document_embeddings;
+CREATE TRIGGER ai_document_embeddings_set_updated_at
+BEFORE UPDATE ON ai_document_embeddings
+FOR EACH ROW
+EXECUTE FUNCTION update_ai_document_embeddings_updated_at();
