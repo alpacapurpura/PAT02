@@ -86,6 +86,7 @@ Thumbs.db
 *.sqlite
 *.db
 *.sql
+!ai-services/postgres-pgvector/init-pgvector.sql
 *.dump
 
 # 14) Artefactos de respaldo propio del proyecto
