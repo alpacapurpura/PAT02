@@ -82,11 +82,11 @@
         'partner_invoicing_mode',  # Modos de facturación por cliente (mensual, por servicio)
         'partner_invoicing_mode_monthly',  # Facturación mensual automática para contratos
         'account_invoice_date_due',  # Gestión avanzada de fechas de vencimiento
-        'account_asset_number',  # Numeración de activos
-        'account_spread_cost_revenue',  # Distribución de costos/ingresos en el tiempo
+        #'account_asset_number',  # Numeración de activos
+        #'account_spread_cost_revenue',  # Distribución de costos/ingresos en el tiempo
         'account_due_list',  # Lista de vencimientos - CRÍTICO para cobranzas B2B
         'account_payment_term_extension',  # Términos de pago extendidos para B2B
-        'account_payment_notification',  # Notificaciones de pagos
+        #'account_payment_notification',  # Notificaciones de pagos
         'account_credit_control',  # Control de créditos y débitos
         
         # === REPORTES & HERRAMIENTAS CONTABLES (MEDIA PRIORIDAD) ===

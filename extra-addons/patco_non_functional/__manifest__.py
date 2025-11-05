@@ -29,6 +29,10 @@
 
         # CONFIGURACIÓN & UTILIDADES
         #'server_environment',  # Ambiente del servidor
+        # E-COMMERCE & CONECTORES
+        #'connector',  # Framework base para conectores e-commerce
+        #'connector_base_product',  # Conectores específicos para productos
+
     ],
     'data': [],
     'demo': [],

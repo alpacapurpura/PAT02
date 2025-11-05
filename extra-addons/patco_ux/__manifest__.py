@@ -34,7 +34,7 @@
         # 'web_listview_range_select', # Si lo encuentras para v18, actívalo
         'web_timeline',                     # Línea de tiempo web
         'web_notify',                       # Notificaciones web
-        'web_environment_ribbon',           # Cinta de ambiente
+        #'web_environment_ribbon',           # Cinta de ambiente
         'web_dialog_size',                  # Tamaño de diálogos
 
         # --- Búsqueda y Filtros ---

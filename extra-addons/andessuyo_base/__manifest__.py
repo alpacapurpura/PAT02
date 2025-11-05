@@ -12,6 +12,8 @@
     'depends': [
         # === DEPENDENCIAS NATIVAS ODOO ===
         'base',
+        'contacts',         # Módulo de Contactos (Clientes, Proveedores, Empleados)
+        'mail',             # Módulo de comunicación (necesario para todo)
         'web',
         'account',
         'stock',
@@ -38,9 +40,6 @@
         'scrap_reason_code',  # Códigos de razón de desecho
         'delivery_total_weight_from_packaging',  # Peso total de entrega desde empaque
         
-        # E-COMMERCE & CONECTORES
-        'connector',  # Framework base para conectores e-commerce
-        'connector_base_product',  # Conectores específicos para productos
         
         # GESTIÓN DE PRODUCTOS
         'product_assortment',  # Gestión de surtidos por cliente - crucial para B2B
@@ -96,7 +95,9 @@
         'pricelist_cache',  # Caché de listas de precios
         'product_customerinfo_sale',  # Información de cliente en ventas
         
-        # CRM & SOCIOS (SOLO MÓDULOS EXISTENTES)
+        # === PARTNER CONTACT (GESTIÓN ADMINISTRATIVA CLIENTES) # CRM & SOCIOS===
+        'partner_contact_access_link',  # Acceso rápido a contactos
+        'partner_contact_role',  # Roles administrativos (facturación, compras, etc.)
         'partner_contact_birthdate',  # Fecha de nacimiento de contactos
         'partner_contact_department',  # Departamento de contactos
         'partner_contact_job_position',  # Posición de trabajo de contactos
@@ -104,23 +105,7 @@
         'partner_external_map',  # Mapas externos de socios
         'partner_firstname',  # Nombre de contactos
         'partner_identification',  # Identificación de socios
-        'partner_industry_secondary',  # Industria secundaria
-        'partner_multi_relation',  # Relaciones múltiples de socios
-        'partner_ref_unique',  # Referencia única de socio
-        'partner_second_lastname',  # Segundo apellido
         
-        # GESTIÓN DOCUMENTAL
-        'dms',  # Sistema de gestión de documentos
-        
-        # REPORTES (SOLO MÓDULOS EXISTENTES)
-        'report_xlsx',  # Reportes en Excel
-        'report_xlsx_helper',  # Ayudante para reportes Excel
-        
-        # CONFIGURACIÓN & UTILIDADES
-        'server_environment',  # Ambiente del servidor
-        
-        # === MÓDULOS PERSONALIZADOS ===
-        'patco_ux',  # Mejoras de UX personalizadas
     ],
     'installable': True,
     'auto_install': False,
