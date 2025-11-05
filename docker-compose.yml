@@ -216,7 +216,7 @@ services:
     depends_on:
       db-init-andessuyo-prod:
         condition: service_completed_successfully
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=patco_base", "--load-language=es_PE", "--without-demo=all"]
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=patco_base", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432
@@ -251,7 +251,7 @@ services:
     depends_on:
       db-init-andessuyo-prod:
         condition: service_completed_successfully
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=andessuyo_base", "--load-language=es_PE", "--without-demo=all"]
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=andessuyo_base", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432
