@@ -84,6 +84,30 @@ services:
       "
     restart: "no"
 
+  # ===== ODOO PATCO INIT (DEV) =====
+  odoo-patco-init-dev:
+    profiles: ["development"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-patco-init-dev
+    depends_on:
+      db-dev:
+        condition: service_healthy
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
+    environment:
+      DB_HOST: db-dev
+      DB_PORT: 5432
+      ODOO_RC: /etc/odoo/odoo.conf
+      TZ: America/Lima
+    volumes:
+      - patco-web-data-dev:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+    networks:
+      - odoo-network-dev
+    restart: "no"
+
   # ===== ODOO PATCO (DEV) =====
   odoo-patco-dev:
     profiles: ["development"]
@@ -92,11 +116,13 @@ services:
       dockerfile: Dockerfile
     container_name: odoo-patco-app
     depends_on:
+      odoo-patco-init-dev:
+        condition: service_completed_successfully
       db-init-andessuyo-dev:
         condition: service_completed_successfully
       traefik:
         condition: service_started
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--db-filter=^odoo_patco$", "--data-dir=/var/lib/odoo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-dev
       DB_PORT: 5432
@@ -118,8 +144,35 @@ services:
       - "traefik.http.services.odoo-web-patco-dev.loadbalancer.server.port=8069"
       - "traefik.http.routers.odoo-websocket-patco-dev.rule=Host(`patco.local`) && PathPrefix(`/websocket`)"
       - "traefik.http.routers.odoo-websocket-patco-dev.entrypoints=web"
+      - "traefik.http.routers.odoo-websocket-patco-dev.priority=100"
       - "traefik.http.routers.odoo-websocket-patco-dev.service=odoo-websocket-patco-dev"
       - "traefik.http.services.odoo-websocket-patco-dev.loadbalancer.server.port=8072"
+
+  # ===== ODOO ANDESSUYO INIT (DEV) =====
+  odoo-andessuyo-init-dev:
+    profiles: ["development"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-andessuyo-init-dev
+    depends_on:
+      db-dev:
+        condition: service_healthy
+      db-init-andessuyo-dev:
+        condition: service_completed_successfully
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
+    environment:
+      DB_HOST: db-dev
+      DB_PORT: 5432
+      ODOO_RC: /etc/odoo/odoo.conf
+      TZ: America/Lima
+    volumes:
+      - andessuyo-web-data-dev:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+    networks:
+      - odoo-network-dev
+    restart: "no"
 
   # ===== ODOO ANDESSUYO (DEV) =====
   odoo-andessuyo-dev:
@@ -129,11 +182,13 @@ services:
       dockerfile: Dockerfile
     container_name: odoo-andessuyo-app
     depends_on:
+      odoo-andessuyo-init-dev:
+        condition: service_completed_successfully
       db-init-andessuyo-dev:
         condition: service_completed_successfully
       traefik:
         condition: service_started
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db-filter=^odoo_andessuyo$", "--data-dir=/var/lib/odoo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-dev
       DB_PORT: 5432
@@ -155,6 +210,7 @@ services:
       - "traefik.http.services.odoo-web-andessuyo-dev.loadbalancer.server.port=8069"
       - "traefik.http.routers.odoo-websocket-andessuyo-dev.rule=Host(`andessuyo.local`) && PathPrefix(`/websocket`)"
       - "traefik.http.routers.odoo-websocket-andessuyo-dev.entrypoints=web"
+      - "traefik.http.routers.odoo-websocket-andessuyo-dev.priority=100"
       - "traefik.http.routers.odoo-websocket-andessuyo-dev.service=odoo-websocket-andessuyo-dev"
       - "traefik.http.services.odoo-websocket-andessuyo-dev.loadbalancer.server.port=8072"
 
@@ -268,7 +324,7 @@ services:
         condition: service_completed_successfully
       odoo-patco-init-prod:
         condition: service_completed_successfully
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--db-filter=^odoo_patco$", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432
@@ -314,7 +370,7 @@ services:
         condition: service_completed_successfully
       odoo-andessuyo-init-prod:
         condition: service_completed_successfully
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db-filter=^odoo_andessuyo$", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432

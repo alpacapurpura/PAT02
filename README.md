@@ -35,3 +35,9 @@ Developers can start with [the developer tutorials](https://www.odoo.com/documen
 
 If you believe you have found a security issue, check our [Responsible Disclosure page](https://www.odoo.com/security-report)
 for details and get in touch with us via email.
+
+## PAT02 notes
+- External dependency `astor==0.8.1` required by `base_view_inheritance_extension` (OCA).
+- After changing `requirements.txt`, rebuild images: `docker compose --profile production up -d --build`.
+- `addons_path` includes all OCA repo roots under `extra-addons/OCA/<repo>`. If you add/remove repos, regenerate `addons_path` and redeploy.
+- Validate in container: `python3 -c "import astor; print(astor.__version__)"` should output `0.8.1`.

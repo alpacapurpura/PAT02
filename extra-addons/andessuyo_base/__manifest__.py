@@ -122,10 +122,6 @@
         # === MÓDULOS PERSONALIZADOS ===
         'patco_ux',  # Mejoras de UX personalizadas
     ],
-    'data': [
-        'data/andessuyo_general_data.xml',
-    ],
-    'demo': [],
     'installable': True,
     'auto_install': False,
     'application': False,

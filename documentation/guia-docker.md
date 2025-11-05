@@ -1,183 +1,349 @@
 # 🐳 Guía de Gestión Docker - Proyecto PATCO
 
-## 📋 Resumen del Problema y Solución
+## 📋 Índice
+1. [Resumen de Problemas Comunes](#resumen-de-problemas-comunes)
+2. [Gestión Básica por Ambientes](#gestión-básica-por-ambientes)
+3. [Gestión de Base de Datos](#gestión-de-base-de-datos)
+4. [Limpieza y Reseteo](#limpieza-y-reseteo)
+5. [Diagnóstico y Logs](#diagnóstico-y-logs)
+6. [Solución de Problemas Específicos](#solución-de-problemas-específicos)
+7. [Referencia de Servicios](#referencia-de-servicios)
 
-### ❌ Problema Identificado
-Cuando ejecutas `docker compose down`, algunos contenedores no se detienen porque:
+---
 
-1. **Servicios con perfiles específicos**: Los servicios con `profiles` (como `ai-setup`, `office-services`) no se incluyen en el comando básico `docker compose down`
-2. **Contenedores huérfanos**: Contenedores que se ejecutaron con perfiles específicos quedan "huérfanos" y no se gestionan con comandos básicos
-3. **Red en uso**: La red `odoo-patco-network` permanece activa mientras haya contenedores conectados a ella
-4. **⚠️ NUEVO PROBLEMA**: Error "Resource is still in use" al intentar eliminar la red
+## 📌 Resumen de Problemas Comunes
 
-### ✅ Solución Implementada
-Para detener TODOS los servicios correctamente, debes usar comandos específicos según el perfil.
+### ❌ Problema: `docker compose down` no detiene todos los servicios
+**Causa**: Los servicios con `profiles` (development/production) no se incluyen en el comando básico.
 
-### 🔧 Solución para "Resource is still in use"
-**Causa**: Contenedores individuales pueden quedar conectados a la red sin aparecer en `docker ps`, especialmente servicios IA que se ejecutan con perfiles específicos.
+**Solución**: Usar comandos específicos por perfil.
 
-**Solución**: Usar `docker network inspect` para identificar contenedores conectados y eliminarlos manualmente antes de eliminar la red.
+### ❌ Problema: Error "Resource is still in use" al eliminar redes
+**Causa**: Contenedores individuales quedan conectados a la red sin aparecer en `docker ps`.
 
-## Cuando quieras resetear completamente el entorno, usa esta secuencia:
-```bash
-# 1. Detener todos los perfiles
-docker compose --profile ai-setup --profile office-services down -v
+**Solución**: Inspeccionar la red y eliminar contenedores manualmente.
 
-# 2. Si la red sigue en uso, inspeccionarla
-docker network inspect odoo-patco-network
+---
 
-# 3. Eliminar contenedores conectados manualmente
-docker stop [nombre-contenedor]
-docker rm [nombre-contenedor]
+## 🚀 Gestión Básica por Ambientes
 
-# 4. Eliminar la red
-docker network rm odoo-patco-network
-
-# 5. Reiniciar desde cero
-docker compose up -d
-```
-### Scripts de WebSockets
-
-```powershell
-# Windows - Corrección de problemas de websockets
-.\scripts\fix-websockets.ps1
-
-# Windows - Configuración preventiva
-.\scripts\setup-websockets.ps1
-```
+### Development (Local)
 
 ```bash
-# Linux - Corrección de problemas de websockets
-./scripts/fix-websockets.sh
+# INICIAR servicios de development
+docker compose --profile development up -d
+
+# DETENER servicios de development
+docker compose --profile development down
+
+# DETENER y ELIMINAR volúmenes (development)
+docker compose --profile development down -v
+
+# REINICIAR servicios de development
+docker compose --profile development restart
+
+# VER estado de servicios
+docker compose --profile development ps
 ```
 
-### Gestión de Datos
+### Production (Servidor)
 
 ```bash
-# Backup de la base de datos
-docker compose exec db pg_dump -U odoo odoo_patco > backup_$(date +%Y%m%d_%H%M%S).sql
+# INICIAR servicios de production
+docker compose --profile production up -d
 
-# Restaurar base de datos
-docker compose exec -T db psql -U odoo odoo_patco < backup_file.sql
+# DETENER servicios de production
+docker compose --profile production down
 
-# Acceder a la base de datos
-docker compose exec db psql -U odoo -d odoo_patco
+# DETENER y ELIMINAR volúmenes (production)
+docker compose --profile production down -v
+
+# REINICIAR servicios de production
+docker compose --profile production restart
+
+# VER estado de servicios
+docker compose --profile production ps
 ```
 
-## 🚀 Comandos de Gestión por Perfiles
+### Ambos Ambientes
 
-### 1. **Servicios Básicos** (Odoo + PostgreSQL)
 ```bash
-# Reiniciar assets
-docker exec odoo-patco-db psql -U odoo -d odoo_patco -c "DELETE FROM ir_attachment WHERE res_model = 'ir.ui.view' AND (name ILIKE '%.assets_%.css' OR name ILIKE '%.assets_%.js');"
+# INICIAR todos los servicios
+docker compose --profile development --profile production up -d
 
-# Iniciar servicios básicos
-docker compose up -d
+# DETENER todos los servicios
+docker compose --profile development --profile production down
 
-# Detener servicios básicos
-docker compose down
-
-# Detener y eliminar volúmenes
-docker compose down -v
-```
-
-### 2. **Servicios IA de Configuración** (Perfil: ai-setup)
-```bash
-# Iniciar servicios de configuración IA
-docker compose --profile ai-setup up -d
-
-# Detener servicios de configuración IA
-docker compose --profile ai-setup down
-
-# Detener y eliminar volúmenes
-docker compose --profile ai-setup down -v
-```
-
-### 3. **Servicios de Oficina** (Perfil: office-services)
-```bash
-# Iniciar OnlyOffice Document Server
-docker compose --profile office-services up -d
-
-# Detener OnlyOffice Document Server
-docker compose --profile office-services down
-
-# Detener y eliminar volúmenes
-docker compose --profile office-services down -v
-```
-
-### 4. **TODOS los Servicios** (Comando Universal)
-```bash
-# Iniciar TODOS los servicios
-docker compose --profile ai-setup --profile office-services up -d
-
-# Detener TODOS los servicios
-docker compose --profile ai-setup --profile office-services down
-
-# Detener TODOS y eliminar volúmenes
-docker compose --profile ai-setup --profile office-services down -v
+# DETENER todos y ELIMINAR volúmenes
+docker compose --profile development --profile production down -v
 ```
 
 ---
 
-## 🔧 Comandos de Limpieza Completa
+## 🗄️ Gestión de Base de Datos
 
-### Método 1: Limpieza por Perfiles
+### Development - Base de datos `odoo_patco`
+
 ```bash
-# Detener todos los perfiles
-docker compose --profile ai-setup --profile office-services down -v
+# ACCEDER a PostgreSQL
+docker compose exec db-dev psql -U odoo -d odoo_patco
 
-# Verificar que no queden contenedores
-docker ps -a
+# HACER BACKUP de la base de datos
+docker compose exec db-dev pg_dump -U odoo odoo_patco > backup_dev_$(date +%Y%m%d_%H%M%S).sql
 
-# Limpiar contenedores huérfanos
+# RESTAURAR base de datos desde archivo
+docker compose exec -T db-dev psql -U odoo odoo_patco < backup_file.sql
+
+# LIMPIAR assets corruptos (CSS/JS)
+docker compose exec db-dev psql -U odoo -d odoo_patco -c "DELETE FROM ir_attachment WHERE res_model = 'ir.ui.view' AND (name ILIKE '%.assets_%.css' OR name ILIKE '%.assets_%.js');"
+
+# REINICIAR Odoo después de limpiar assets
+docker compose --profile development restart odoo-patco-dev
+```
+
+### Production - Base de datos `odoo_patco`
+
+```bash
+# ACCEDER a PostgreSQL (solo diagnóstico)
+docker compose --profile production exec db-prod psql -U odoo -d odoo_patco
+
+# HACER BACKUP de la base de datos
+docker compose --profile production exec db-prod pg_dump -U odoo odoo_patco > backup_prod_$(date +%Y%m%d_%H%M%S).sql
+
+# RESTAURAR base de datos desde archivo
+docker compose --profile production exec -T db-prod psql -U odoo odoo_patco < backup_file.sql
+
+# LIMPIAR assets corruptos (CSS/JS)
+docker compose --profile production exec db-prod psql -U odoo -d odoo_patco -c "DELETE FROM ir_attachment WHERE res_model = 'ir.ui.view' AND (name ILIKE '%.assets_%.css' OR name ILIKE '%.assets_%.js');"
+
+# REINICIAR Odoo después de limpiar assets
+docker compose --profile production restart odoo-patco-prod
+```
+
+---
+
+## 🧹 Limpieza y Reseteo
+
+### Reset Completo - Development
+
+```bash
+# 1. Detener todos los servicios y eliminar volúmenes
+docker compose --profile development down -v
+
+# 2. Verificar que no queden contenedores
+docker ps -a | grep -E "(patco|andessuyo|odoo)"
+
+# 3. Limpiar contenedores huérfanos
 docker container prune -f
+
+# 4. Limpiar redes no utilizadas (si es necesario)
+docker network prune -f
+
+# 5. Reiniciar desde cero
+docker compose --profile development up -d
 ```
 
-### Método 2: Limpieza Manual (Método Usado)
+### Reset Completo - Production
+
 ```bash
-# 1. Identificar contenedores activos
-docker ps -a
+# 1. Detener todos los servicios y eliminar volúmenes
+docker compose --profile production down -v
 
-# 2. Detener contenedores específicos
-docker stop patco-document-indexer patco-mcp-server patco-onlyoffice-documentserver patco-onlyoffice-rabbitmq
+# 2. Verificar que no queden contenedores
+docker ps -a | grep -E "(patco|andessuyo|odoo)"
 
-# 3. Eliminar contenedores
-docker rm patco-document-indexer patco-mcp-server patco-onlyoffice-documentserver patco-onlyoffice-rabbitmq
+# 3. Limpiar contenedores huérfanos
+docker container prune -f
 
-# 4. Eliminar red
-docker network rm odoo-patco-network
-
-# 5. Limpiar recursos no utilizados
-docker system prune -f
+# 4. Reiniciar desde cero
+docker compose --profile production up -d
 ```
 
-### Método 2.1: Solución para Red "Resource is still in use"
+### Solución: Red "Resource is still in use"
+
 ```bash
-# ⚠️ PROBLEMA: La red odoo-patco-network no se elimina con "Resource is still in use"
-# ✅ SOLUCIÓN: Identificar y eliminar contenedores conectados manualmente
+# Development
+docker network inspect odoo-network-dev
+docker stop $(docker network inspect odoo-network-dev -f '{{range .Containers}}{{.Name}} {{end}}')
+docker network rm odoo-network-dev
 
-# 1. Inspeccionar qué contenedores están usando la red
-docker network inspect odoo-patco-network
-
-# 2. Identificar contenedores en la sección "Containers" del output
-# Ejemplo: "patco-document-indexer" aparece conectado
-
-# 3. Detener el contenedor específico
-docker stop patco-document-indexer
-
-# 4. Eliminar el contenedor
-docker rm patco-document-indexer
-
-# 5. Ahora eliminar la red
-docker network rm odoo-patco-network
-
-# 6. Verificar que la red fue eliminada
-docker network ls | grep odoo-patco
+# Production
+docker network inspect odoo-patco-network-prod
+docker stop $(docker network inspect odoo-patco-network-prod -f '{{range .Containers}}{{.Name}} {{end}}')
+docker network rm odoo-patco-network-prod
 ```
 
-### Método 3: Limpieza Nuclear (Último Recurso)
+---
+
+## 🔍 Diagnóstico y Logs
+
+### Ver Logs por Servicio
+
 ```bash
-# ⚠️ CUIDADO: Esto elimina TODOS los contenedores y redes
+# Development logs
+docker compose --profile development logs odoo-patco-dev
+docker compose --profile development logs odoo-andessuyo-dev
+docker compose --profile development logs db-dev
+docker compose --profile development logs traefik
+
+# Production logs
+docker compose --profile production logs odoo-patco-prod
+docker compose --profile production logs odoo-andessuyo-prod
+docker compose --profile production logs db-prod
+
+# Ver logs en tiempo real (follow)
+docker compose --profile development logs -f odoo-patco-dev
+
+# Ver últimas 100 líneas
+docker compose --profile development logs --tail=100 odoo-patco-dev
+```
+
+### Acceder a Contenedores
+
+```bash
+# Development - Acceder a contenedor Odoo PATCO
+docker compose exec odoo-patco-dev bash
+
+# Development - Acceder a contenedor Odoo Andessuyo
+docker compose exec odoo-andessuyo-dev bash
+
+# Development - Acceder a PostgreSQL
+docker compose exec db-dev bash
+
+# Production - Acceder a contenedor Odoo PATCO
+docker compose --profile production exec odoo-patco-prod bash
+
+# Production - Acceder a contenedor Odoo Andessuyo
+docker compose --profile production exec odoo-andessuyo-prod bash
+```
+
+### Verificar Configuración
+
+```bash
+# Development - Ver configuración Odoo
+docker compose exec odoo-patco-dev cat /etc/odoo/odoo.conf
+
+# Production - Ver configuración Odoo
+docker compose --profile production exec odoo-patco-prod cat /etc/odoo/odoo.conf
+```
+
+---
+
+## 🔧 Solución de Problemas Específicos
+
+### WebSockets (Development)
+
+```bash
+# Linux - Ejecutar script de corrección
+./scripts/fix-websockets.sh
+
+# Verificar que Evented Service esté corriendo
+docker exec odoo-patco-app tail -n 20 /var/log/odoo/odoo.log | grep "Evented Service"
+# Salida esperada: Evented Service (longpolling) running on 0.0.0.0:8072
+
+# Verificar OdooBot activo
+docker exec odoo-patco-db psql -U odoo -d odoo_patco -c "SELECT u.id, p.name, u.active FROM res_users u JOIN res_partner p ON u.partner_id = p.id WHERE u.id = 1;"
+# Salida esperada: 1 | OdooBot | t
+```
+
+### Actualización de Módulos
+
+```bash
+# Development - Actualizar TODOS los módulos
+docker compose exec odoo-patco-dev /opt/odoo/odoo-bin -u all -d odoo_patco --stop-after-init
+
+# Development - Actualizar módulo específico
+docker compose exec odoo-patco-dev /opt/odoo/odoo-bin -d odoo_patco -u base --stop-after-init
+
+# Production - Actualizar TODOS los módulos
+docker compose --profile production exec odoo-patco-prod /opt/odoo/odoo-bin -u all -d odoo_patco --stop-after-init
+
+# Production - Actualizar módulo específico
+docker compose --profile production exec odoo-patco-prod /opt/odoo/odoo-bin -d odoo_patco -u base --stop-after-init
+```
+
+### Problemas de Puerto
+
+```bash
+# Si el puerto 8069 está ocupado, modificar docker-compose.yml
+# Development: cambiar en el servicio odoo-patco-dev
+ports:
+  - "8070:8069"  # Usar puerto 8070 en lugar de 8069
+
+# Production: cambiar en el servicio odoo-patco-prod
+ports:
+  - "8071:8069"  # Usar puerto 8071 en lugar de 8069
+```
+
+### Problemas de Permisos (Linux/Mac)
+
+```bash
+# Ajustar permisos de directorios
+sudo chown -R 101:101 ./config
+sudo chown -R 101:101 ./addons
+sudo chown -R 101:101 ./extra-addons
+```
+
+---
+
+## 📊 Referencia de Servicios
+
+### Development - Servicios y Contenedores
+
+| Servicio Compose | Contenedor Docker | Base de Datos | Descripción |
+|------------------|-------------------|---------------|-------------|
+| `traefik` | `patco-traefik-dev` | - | Proxy inverso y load balancer |
+| `db-dev` | `odoo-patco-db` | `odoo_patco` | PostgreSQL 15 principal |
+| `odoo-patco-dev` | `odoo-patco-app` | `odoo_patco` | Odoo Community 18 - PATCO |
+| `odoo-andessuyo-dev` | `odoo-andessuyo-app` | `odoo_andessuyo` | Odoo Community 18 - Andessuyo |
+| `db-init-andessuyo-dev` | Temporal | `odoo_andessuyo` | Inicialización DB Andessuyo |
+
+### Production - Servicios y Contenedores
+
+| Servicio Compose | Contenedor Docker | Base de Datos | Descripción |
+|------------------|-------------------|---------------|-------------|
+| `db-prod` | `odoo-db-prod` | `odoo_patco` | PostgreSQL 15 principal |
+| `odoo-patco-prod` | `odoo-patco-app-prod` | `odoo_patco` | Odoo Community 18 - PATCO |
+| `odoo-andessuyo-prod` | `odoo-andessuyo-app-prod` | `odoo_andessuyo` | Odoo Community 18 - Andessuyo |
+| `odoo-patco-init-prod` | Temporal | `odoo_patco` | Inicialización DB PATCO |
+| `odoo-andessuyo-init-prod` | Temporal | `odoo_andessuyo` | Inicialización DB Andessuyo |
+
+### Volúmenes Principales
+
+```bash
+# Development
+docker volume ls | grep -E "(dev|development)"
+# odoo-patco-web-data-dev      # Datos web Odoo PATCO
+docker volume ls | grep odoo
+# odoo-andessuyo-web-data-dev  # Datos web Odoo Andessuyo
+# odoo-patco-db-data-dev       # Datos PostgreSQL
+
+# Production
+docker volume ls | grep -E "(prod|production)"
+# odoo-patco-web-data-prod     # Datos web Odoo PATCO
+# odoo-andessuyo-web-data-prod # Datos web Odoo Andessuyo
+# odoo-patco-db-data-prod      # Datos PostgreSQL
+```
+
+### Redes
+
+```bash
+# Development
+docker network ls | grep dev
+# odoo-network-dev             # Red bridge para development
+
+# Production
+docker network ls | grep prod
+# odoo-patco-network-prod      # Red bridge para production
+# web_gateway                  # Red external para Traefik
+```
+
+---
+
+## ⚠️ Comandos de Emergencia (Último Recurso)
+
+```bash
+# ⚠️ CUIDADO: Elimina TODOS los contenedores, redes y volúmenes
 docker stop $(docker ps -aq)
 docker rm $(docker ps -aq)
 docker network prune -f
@@ -187,194 +353,4 @@ docker system prune -af
 
 ---
 
-## 📊 Servicios del Proyecto PATCO
-
-### Servicios Básicos (Sin perfil)
-- `db` → `odoo-patco-db` (PostgreSQL 15)
-- `odoo` → `odoo-patco-app` (Odoo Community 18)
-
-### Servicios IA - Configuración (Perfil: ai-setup)
-- `pgvector-setup` → `patco-pgvector-setup`
-- `ai-services-validator` → `patco-ai-validator`
-
-### Servicios IA - Producción (Sin perfil específico)
-- `document-indexer` → `patco-document-indexer`
-- `mcp-server` → `patco-mcp-server`
-- `langgraph-server` → `patco-langgraph-server`
-
-### Servicios de Oficina (Perfil: office-services)
-- `onlyoffice-documentserver` → `patco-onlyoffice-documentserver`
-- `onlyoffice-rabbitmq` → `patco-onlyoffice-rabbitmq`
-
----
-
-## 🌐 Gestión de Redes
-
-### Red Principal
-- **Nombre**: `odoo-patco-network`
-- **Tipo**: Bridge
-- **Propósito**: Comunicación entre todos los servicios PATCO
-
-### Verificar Estado de Red
-```bash
-# Listar redes
-docker network ls
-
-# Inspeccionar red específica
-docker network inspect odoo-patco-network
-
-# Ver qué contenedores están conectados
-docker network inspect odoo-patco-network | grep -A 10 "Containers"
-```
-
----
-
-## 📦 Gestión de Volúmenes
-
-### Volúmenes del Proyecto
-```bash
-# Listar volúmenes PATCO
-docker volume ls | grep patco
-
-# Volúmenes principales:
-# - odoo-patco-web-data (datos web Odoo)
-# - odoo-patco-db-data (base de datos PostgreSQL)
-# - patco-onlyoffice-* (datos OnlyOffice)
-```
-
-### Limpieza de Volúmenes
-```bash
-# Eliminar volúmenes específicos
-docker volume rm odoo-patco-web-data odoo-patco-db-data
-
-# Eliminar todos los volúmenes no utilizados
-docker volume prune -f
-```
-
----
-
-## 🚨 Comandos de Emergencia
-
-### Verificar Estado General
-```bash
-# Ver todos los contenedores
-docker ps -a
-
-# Ver uso de recursos
-docker stats
-
-# Ver logs de un servicio específico
-docker compose logs odoo
-docker compose logs db
-```
-
-### Reinicio Completo del Proyecto
-```bash
-# 1. Detener todo
-docker compose --profile ai-setup --profile office-services down -v
-
-# 2. Limpiar contenedores huérfanos
-docker container prune -f
-
-# 3. Limpiar redes no utilizadas
-docker network prune -f
-
-# 4. Iniciar servicios básicos
-docker compose up -d
-
-# 5. Iniciar servicios adicionales si es necesario
-docker compose --profile office-services up -d
-```
-
----
-## Solución de Problemas
-
-### Problemas Comunes
-
-1. **Puerto 8069 ocupado**:
-   ```bash
-   # Cambiar puerto en docker-compose.yml
-   ports:
-     - "8070:8069"  # Usar puerto 8070
-   ```
-
-2. **Error de conexión a base de datos**:
-   ```bash
-   # Verificar que PostgreSQL esté ejecutándose
-   docker compose logs db
-   
-   # Reiniciar servicios
-   docker compose down && docker compose up -d
-   ```
-
-3. **Problemas de permisos**:
-   ```bash
-   # En Linux/Mac, ajustar permisos
-   sudo chown -R 101:101 ./config
-   sudo chown -R 101:101 ./addons
-   ```
-
-4. **Problemas de WebSockets (SOLUCIONADO AUTOMÁTICAMENTE)**:
-   ```powershell
-   # Windows - Ejecutar script de corrección
-   .\scripts\fix-websockets.ps1
-   ```
-   ```bash
-   # Linux - Ejecutar script de corrección
-   ./scripts/fix-websockets.sh
-   ```
-
-5. **Problema de assets corruptos (CSS)**:
-   ```bash
-   # 1. Limpiar assets corruptos
-   docker compose exec db psql -U odoo -d odoo_patco -c "DELETE FROM ir_attachment WHERE res_model = 'ir.ui.view' AND (name ILIKE '%.assets_%.css' OR name ILIKE '%.assets_%.js');"
-
-   # 2. Reiniciar Odoo
-   docker compose restart odoo
-   ```
-
-6. **Actualizaciones de los módulos, si hay cambios**:
-   ```bash
-   # Actualizar módulos
-   docker compose exec odoo odoo-bin -u all -d odoo-patco
-   
-   # o esto para un solo módulo 
-   docker compose exec odoo ./odoo-bin -d nombre_de_tu_db -u base --stop-after-init
-   ```
-
-
-### Logs y Diagnóstico
-
-```bash
-# Ver logs detallados
-docker compose logs --tail=100 -f
-
-# Acceder al contenedor de Odoo
-docker compose exec odoo bash
-
-# Verificar configuración
-docker compose exec odoo cat /etc/odoo/odoo.conf
-
-# Ver logs específicos de websockets
-Get-Content logs/odoo.log | Select-String -Pattern "websocket|longpolling|Evented"
-```
-
-### Verificación de WebSockets
-
-```bash
-# Verificar que el Evented Service esté corriendo
-docker exec odoo-patco-app tail -n 20 /var/log/odoo/odoo.log | grep "Evented Service"
-
-# Salida esperada:
-# Evented Service (longpolling) running on 0.0.0.0:8072
-```
-
-```sql
-# Verificar que OdooBot esté activo
-docker exec odoo-patco-db psql -U odoo -d odoo_patco -c "SELECT u.id, p.name, u.active FROM res_users u JOIN res_partner p ON u.partner_id = p.id WHERE u.id = 1;"
-
-# Salida esperada:
-# 1 | OdooBot | t
-```
-
-**Nota**: Este es un sistema en desarrollo. Para producción, considerar configuraciones adicionales de seguridad, SSL/TLS, y monitoreo.
+**Nota**: Esta guía está optimizada para el proyecto PATCO con Odoo Community 18. Para producción, considerar configuraciones adicionales de seguridad, SSL/TLS, y monitoreo.

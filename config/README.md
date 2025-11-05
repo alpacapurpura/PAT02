@@ -9,9 +9,15 @@ This folder contains the Odoo configuration used by containers via `- ./config:/
 - `dbfilter = ^odoo_(patco|andessuyo)$`: restricts accessible DBs to the two production databases. Update this regex if adding new prod DBs.
 - `proxy_mode = True`: required behind Traefik / TLS to trust `X-Forwarded-*` headers.
 
+## Development settings
+
+- `data_dir = /var/lib/odoo`: ensures filestore and sessions are stored in the mapped volume.
+- `dbfilter = ^odoo_(patco|andessuyo)$`: same constraint applied in dev; each service additionally passes `--db-filter=^odoo_<db>$` and `-d <db>`.
+- Combined with compose commands, both `patco.local` and `andessuyo.local` route directly to their login without showing the database manager when `list_db=False`.
+
 ## Deployment notes
 
-- The config is shared by both prod Odoo services (Patco and Andessuyo) through the mapped volume. Default DB per service is selected by container command (`-d odoo_patco` or `-d odoo_andessuyo`).
+- The config is shared by both prod Odoo services (Patco and Andessuyo) through the mapped volume. Default DB per service is selected by container command (`-d odoo_patco` or `-d odoo_andessuyo`) and constrained with `--db-filter=^odoo_(patco|andessuyo)$` per servicio, evitando cualquier listing y asegurando el login directo.
 - After changes, review logs with `docker compose logs odoo-patco-prod odoo-andessuyo-prod | tail -n 200` and ensure Odoo starts without warnings.
 - Never commit the `admin_passwd` elsewhere; it lives only in `config/odoo.conf`.
 

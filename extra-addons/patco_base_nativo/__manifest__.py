@@ -31,9 +31,6 @@
         'account',          # Módulo de Facturación y Contabilidad (Cobros y Pagos)
         'analytic',         # Módulo de Costos (Contabilidad Analítica)
     ],
-    'data': [
-        'data/patco_general_data.xml',
-    ],
     'demo': [],
     'installable': True,
     'auto_install': False,

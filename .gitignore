@@ -34,6 +34,7 @@ odoo/addons/base/maintenance
 
 # 6) Configuración específica de instalación en Windows
 /config/odoo.conf
+/config/odoo.conf.prod
 
 # 7) Artefactos de instalador Windows
 install/win32/*.bat

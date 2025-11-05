@@ -18,17 +18,17 @@
         'mail',
 
         # --- QUEUE (Colas de Trabajo) ---
-        'queue_job',                        # Trabajos en cola
-        'queue_job_batch',                  # Lotes de trabajos
-        'queue_job_cron',                   # Trabajos programados
+        #'queue_job',                        # Trabajos en cola
+        #'queue_job_batch',                  # Lotes de trabajos
+        #'queue_job_cron',                   # Trabajos programados
         
         # --- CONNECTOR (Conectores) ---
-        'connector',                        # Conector base
-        'component',                        # Componentes
-        'component_event',                  # Eventos de componentes
+        #'connector',                        # Conector base
+        #'component',                        # Componentes
+        #'component_event',                  # Eventos de componentes
 
-                # CONFIGURACIÓN & UTILIDADES
-        'server_environment',  # Ambiente del servidor
+        # CONFIGURACIÓN & UTILIDADES
+        #'server_environment',  # Ambiente del servidor
     ],
     'data': [],
     'demo': [],
