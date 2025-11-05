@@ -50,11 +50,11 @@ services:
         aliases:
           - db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U odoo -d odoo_patco"]
+      test: ["CMD-SHELL", "PGPASSWORD=$POSTGRES_PASSWORD psql -U odoo -d odoo_patco -c 'SELECT 1'"]
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 60s
+      start_period: 120s
 
   # Inicializa DB secundaria (andessuyo) en dev
   db-init-andessuyo-dev:
@@ -173,11 +173,11 @@ services:
     networks:
       - odoo-network-prod
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U odoo -d odoo_patco"]
+      test: ["CMD-SHELL", "PGPASSWORD=$POSTGRES_PASSWORD psql -U odoo -d odoo_patco -c 'SELECT 1'"]
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 60s
+      start_period: 120s
 
   db-init-andessuyo-prod:
     profiles: ["production"]
@@ -226,6 +226,7 @@ services:
       - ./extra-addons:/mnt/extra-addons
     networks:
       - odoo-network-prod
+    restart: "no"
 
   odoo-andessuyo-init-prod:
     profiles: ["production"]
@@ -236,6 +237,8 @@ services:
     depends_on:
       db-prod:
         condition: service_healthy
+      db-init-andessuyo-prod:
+        condition: service_completed_successfully
     command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
     environment:
       DB_HOST: db-prod
@@ -247,6 +250,7 @@ services:
       - ./extra-addons:/mnt/extra-addons
     networks:
       - odoo-network-prod
+    restart: "no"
 
   # ===== ODOO PATCO (PROD) =====
   odoo-patco-prod:
