@@ -87,6 +87,9 @@ Thumbs.db
 *.db
 *.sql
 !ai-services/postgres-pgvector/init-pgvector.sql
+!odoo/**/*.sql
+!addons/**/*.sql
+!extra-addons/**/*.sql
 *.dump
 
 # 14) Artefactos de respaldo propio del proyecto
