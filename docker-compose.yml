@@ -206,6 +206,48 @@ services:
       "
     restart: "no"
 
+  odoo-patco-init-prod:
+    profiles: ["production"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-patco-init-prod
+    depends_on:
+      db-prod:
+        condition: service_healthy
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
+    environment:
+      DB_HOST: db-prod
+      DB_PORT: 5432
+      ODOO_RC: /etc/odoo/odoo.conf
+    volumes:
+      - patco-web-data-prod:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+    networks:
+      - odoo-network-prod
+
+  odoo-andessuyo-init-prod:
+    profiles: ["production"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-andessuyo-init-prod
+    depends_on:
+      db-prod:
+        condition: service_healthy
+    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
+    environment:
+      DB_HOST: db-prod
+      DB_PORT: 5432
+      ODOO_RC: /etc/odoo/odoo.conf
+    volumes:
+      - andessuyo-web-data-prod:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+    networks:
+      - odoo-network-prod
+
   # ===== ODOO PATCO (PROD) =====
   odoo-patco-prod:
     profiles: ["production"]
@@ -215,6 +257,8 @@ services:
     container_name: odoo-patco-app-prod
     depends_on:
       db-init-andessuyo-prod:
+        condition: service_completed_successfully
+      odoo-patco-init-prod:
         condition: service_completed_successfully
     command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
@@ -229,6 +273,12 @@ services:
     networks:
       - odoo-network-prod
       - web_gateway
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/database/selector || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=web_gateway"
@@ -251,6 +301,8 @@ services:
     depends_on:
       db-init-andessuyo-prod:
         condition: service_completed_successfully
+      odoo-andessuyo-init-prod:
+        condition: service_completed_successfully
     command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-prod
@@ -264,6 +316,12 @@ services:
     networks:
       - odoo-network-prod
       - web_gateway
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/database/selector || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=web_gateway"
