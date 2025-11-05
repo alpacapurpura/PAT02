@@ -79,8 +79,8 @@
 
         # === MÓDULOS CONTABLES B2B (ALTA PRIORIDAD) ===
         'account_invoice_start_end_dates',  # Fechas inicio/fin en facturas - CRÍTICO para servicios
-        'partner_invoicing_mode',  # Modos de facturación por cliente (mensual, por servicio)
-        'partner_invoicing_mode_monthly',  # Facturación mensual automática para contratos
+        #'partner_invoicing_mode',  # Modos de facturación por cliente (mensual, por servicio)
+        #'partner_invoicing_mode_monthly',  # Facturación mensual automática para contratos
         'account_invoice_date_due',  # Gestión avanzada de fechas de vencimiento
         #'account_asset_number',  # Numeración de activos
         #'account_spread_cost_revenue',  # Distribución de costos/ingresos en el tiempo
