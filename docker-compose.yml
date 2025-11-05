@@ -101,6 +101,7 @@ services:
       DB_HOST: db-dev
       DB_PORT: 5432
       ODOO_RC: /etc/odoo/odoo.conf
+      TZ: America/Lima
     volumes:
       - patco-web-data-dev:/var/lib/odoo
       - ./config:/etc/odoo
@@ -137,6 +138,7 @@ services:
       DB_HOST: db-dev
       DB_PORT: 5432
       ODOO_RC: /etc/odoo/odoo.conf
+      TZ: America/Lima
     volumes:
       - andessuyo-web-data-dev:/var/lib/odoo
       - ./config:/etc/odoo
@@ -220,6 +222,7 @@ services:
       DB_HOST: db-prod
       DB_PORT: 5432
       ODOO_RC: /etc/odoo/odoo.conf
+      TZ: America/Lima
     volumes:
       - patco-web-data-prod:/var/lib/odoo
       - ./config:/etc/odoo
@@ -244,6 +247,7 @@ services:
       DB_HOST: db-prod
       DB_PORT: 5432
       ODOO_RC: /etc/odoo/odoo.conf
+      TZ: America/Lima
     volumes:
       - andessuyo-web-data-prod:/var/lib/odoo
       - ./config:/etc/odoo
@@ -269,6 +273,7 @@ services:
       DB_HOST: db-prod
       DB_PORT: 5432
       ODOO_RC: /etc/odoo/odoo.conf
+      TZ: America/Lima
     volumes:
       - patco-web-data-prod:/var/lib/odoo
       - ./config:/etc/odoo
@@ -288,10 +293,12 @@ services:
       - "traefik.docker.network=web_gateway"
       - "traefik.http.routers.odoo-patco-prod.rule=Host(`erp.patcoperu.com`)"
       - "traefik.http.routers.odoo-patco-prod.entrypoints=websecure"
+      - "traefik.http.routers.odoo-patco-prod.service=odoo-web-patco-prod"
       - "traefik.http.routers.odoo-patco-prod.tls.certresolver=letsencrypt"
       - "traefik.http.services.odoo-web-patco-prod.loadbalancer.server.port=8069"
       - "traefik.http.routers.odoo-patco-websocket-prod.rule=Host(`erp.patcoperu.com`) && PathPrefix(`/websocket`)"
       - "traefik.http.routers.odoo-patco-websocket-prod.entrypoints=websecure"
+      - "traefik.http.routers.odoo-patco-websocket-prod.service=odoo-websocket-patco-prod"
       - "traefik.http.routers.odoo-patco-websocket-prod.tls.certresolver=letsencrypt"
       - "traefik.http.services.odoo-websocket-patco-prod.loadbalancer.server.port=8072"
 
@@ -312,6 +319,7 @@ services:
       DB_HOST: db-prod
       DB_PORT: 5432
       ODOO_RC: /etc/odoo/odoo.conf
+      TZ: America/Lima
     volumes:
       - andessuyo-web-data-prod:/var/lib/odoo
       - ./config:/etc/odoo
@@ -331,10 +339,12 @@ services:
       - "traefik.docker.network=web_gateway"
       - "traefik.http.routers.odoo-andessuyo-prod.rule=Host(`erp.andessuyo.com`)"
       - "traefik.http.routers.odoo-andessuyo-prod.entrypoints=websecure"
+      - "traefik.http.routers.odoo-andessuyo-prod.service=odoo-web-andessuyo-prod"
       - "traefik.http.routers.odoo-andessuyo-prod.tls.certresolver=letsencrypt"
       - "traefik.http.services.odoo-web-andessuyo-prod.loadbalancer.server.port=8069"
       - "traefik.http.routers.odoo-andessuyo-websocket-prod.rule=Host(`erp.andessuyo.com`) && PathPrefix(`/websocket`)"
       - "traefik.http.routers.odoo-andessuyo-websocket-prod.entrypoints=websecure"
+      - "traefik.http.routers.odoo-andessuyo-websocket-prod.service=odoo-websocket-andessuyo-prod"
       - "traefik.http.routers.odoo-andessuyo-websocket-prod.tls.certresolver=letsencrypt"
       - "traefik.http.services.odoo-websocket-andessuyo-prod.loadbalancer.server.port=8072"
 
