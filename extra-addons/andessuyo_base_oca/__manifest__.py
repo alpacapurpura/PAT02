@@ -10,19 +10,23 @@
     'website': 'https://andessuyo.com',
     'license': 'LGPL-3',
     'depends': [
-        # === DEPENDENCIAS NATIVAS ODOO ===
-        'base',
-        'contacts',         # Módulo de Contactos (Clientes, Proveedores, Empleados)
-        'mail',             # Módulo de comunicación (necesario para todo)
-        'web',
-        'account',
-        'stock',
-        'sale_management',
-        'product',
-        'purchase',
-        'delivery',
-        'point_of_sale',
-        
+        #Reporte fotogradico
+        'quality_control_oca',
+        'quality_control_stock_oca',
+
+        # Costeo por Project        
+        'project_purchase_link',
+        'project_department',
+        'project_type',
+        'project_template',
+        'project_task_stock',
+        'project_task_stock_product_set',
+        'project_task_stage_mgmt',
+        'project_task_stage_state',
+        'project_task_tag',
+        'sale_project_copy_tasks',
+        'sale_project_task_recurrency',
+
         # === MÓDULOS OCA PARA COMERCIALIZACIÓN ORGÁNICA ===
         # INVENTARIO & LOGÍSTICA
         'stock_dynamic_routing',  # Enrutamiento dinámico de stock
@@ -31,7 +35,7 @@
         'stock_picking_invoice_link',  # Enlace picking-factura
         'stock_picking_mass_action',  # Acciones masivas en picking
         'stock_picking_partner_note',  # Notas de socio en picking
-        'stock_picking_progress',  # Progreso de picking
+        #'stock_picking_progress',  # Progreso de picking
         'stock_picking_send_by_mail',  # Envío de picking por correo
         'stock_no_negative',  # Prevención de stock negativo
         'stock_production_lot_active',  # Lotes de producción activos
@@ -106,6 +110,25 @@
         'partner_firstname',  # Nombre de contactos
         'partner_identification',  # Identificación de socios
         
+        # POS
+        'pos_barcode_rule_priced_with_change_rate',
+        'pos_display_order_number',
+        'pos_display_total_quantity',
+        'pos_divide_order_summary',
+        'pos_lot_barcode',
+
+        #Contratos con proveedores
+        'contract',
+        'contract_invoice_start_end_dates',
+        'contract_sale',
+        'contract_sale_invoicing',
+        'contract_sale_mandate',
+        'contract_payment_mode',
+        'contract_price_revision',
+        'contract_transmit_method',
+        'product_contract',
+        'product_contract_variable_quantity',
+
     ],
     'installable': True,
     'auto_install': False,

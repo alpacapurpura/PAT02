@@ -217,3 +217,9 @@
 	path = extra-addons/OCA/calendar
 	url = https://github.com/OCA/calendar.git
 	branch = 18.0
+[submodule "extra-addons/OCA/manufacture"]
+	path = extra-addons/OCA/manufacture
+	url = https://github.com/OCA/manufacture.git
+[submodule "extra-addons/OCA/server-backend"]
+	path = extra-addons/OCA/server-backend
+	url = https://github.com/OCA/server-backend.git
