@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_maintenance_equipment_form_patco" model="ir.ui.view">
+            <field name="name">maintenance.equipment.form.patco</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="PATCO">
+                        <field name="x_patco_code" readonly="1"/>
+                        <field name="x_customer_id"/>
+                        <field name="x_service_location_id"/>
+                    </group>
+                    <group string="Mobile Access">
+                        <field name="x_qr_code" widget="image"/>
+                        <field name="x_qr_url" widget="url" readonly="1"/>
+                    </group>
+                    <group string="Technicians">
+                        <field name="technician_id"/>
+                        <field name="technician_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_maintenance_equipment_list_patco" model="ir.ui.view">
+            <field name="name">maintenance.equipment.list.patco</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="x_patco_code" optional="show"/>
+                    <field name="x_customer_id" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_maintenance_equipment_search_patco" model="ir.ui.view">
+            <field name="name">maintenance.equipment.search.patco</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="x_patco_code"/>
+                    <field name="x_customer_id"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

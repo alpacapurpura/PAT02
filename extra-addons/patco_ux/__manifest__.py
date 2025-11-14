@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'PATCO UX',
+    'name': 'PATCO Base - Módulos de mejora UX',
     'version': '18.0.1.0.0',
     'category': 'Mejoras visuales (UX)',
     'summary': 'PATCO UX - Mejoras en la eXperiencia de Usuario (UX)',

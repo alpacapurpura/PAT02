@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_fsm_order_form_patco" model="ir.ui.view">
+            <field name="name">fsm.order.form.patco</field>
+            <field name="model">fsm.order</field>
+            <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='person_id']" position="after">
+                    <group string="Equipment">
+                        <field name="x_equipment_id" options="{'no_create': True}"/>
+                        <field name="x_equipment_code" readonly="1" invisible="not x_equipment_id"/>
+                        <field name="x_equipment_count" readonly="1"/>
+                        <field name="x_equipment_categories" readonly="1" widget="many2many_tags"/>
+                        <field name="x_all_equipment_codes" readonly="1"/>
+                    </group>
+                    <group string="Multiple Equipment">
+                        <field name="x_equipment_ids" nolabel="1" widget="many2many_tags" options="{'no_create': True}">
+                            <list>
+                                <field name="name"/>
+                            </list>
+                        </field>
+                        <div class="oe_button_box" name="equipment_button_box">
+                            <button name="action_view_all_equipment" type="object" class="oe_stat_button" icon="fa-cogs">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value"><field name="x_equipment_count"/></span>
+                                    <span class="o_stat_text">Equipos</span>
+                                </div>
+                            </button>
+                        </div>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_fsm_order_list_patco" model="ir.ui.view">
+            <field name="name">fsm.order.list.patco</field>
+            <field name="model">fsm.order</field>
+            <field name="inherit_id" ref="fieldservice.fsm_order_list_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='person_id']" position="after">
+                    <field name="x_equipment_code" optional="show" string="Equipo"/>
+                    <field name="x_equipment_count" optional="show"/>
+                    <field name="x_equipment_categories" optional="hide" widget="many2many_tags"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_fsm_order_search_patco" model="ir.ui.view">
+            <field name="name">fsm.order.search.patco</field>
+            <field name="model">fsm.order</field>
+            <field name="inherit_id" ref="fieldservice.fsm_order_search_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='person_id']" position="after">
+                    <field name="x_equipment_id"/>
+                    <field name="x_equipment_code"/>
+                    <field name="x_equipment_ids"/>
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <filter name="group_equipment" string="Equipo" context="{'group_by': 'x_equipment_id'}"/>
+                    <filter name="group_equipment_category" string="Categoría Equipo" context="{'group_by': 'x_equipment_categories'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

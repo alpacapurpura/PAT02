@@ -5,32 +5,6 @@
 # Redes separadas, volúmenes separados, Traefik solo en desarrollo.
 
 services:
-  # ===== TRAEFIK (SOLO DESARROLLO) =====
-  traefik:
-    profiles: ["development"]
-    image: traefik:v3.0
-    container_name: patco-traefik-dev
-    command:
-      - --api.insecure=true
-      - --api.dashboard=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --providers.docker.network=odoo-network-dev
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.websocket.address=:8072
-      - --log.level=INFO
-      - --accesslog=true
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - odoo-network-dev
-    restart: unless-stopped
-
   # ===== DB (DESARROLLO) =====
   db-dev:
     profiles: ["development"]
@@ -120,8 +94,8 @@ services:
         condition: service_completed_successfully
       db-init-andessuyo-dev:
         condition: service_completed_successfully
-      traefik:
-        condition: service_started
+      #traefik:
+      #  condition: service_started
     command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--db-filter=^odoo_patco$", "--data-dir=/var/lib/odoo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-dev
@@ -134,20 +108,23 @@ services:
       - ./extra-addons:/mnt/extra-addons
       - ./logs:/var/log/odoo
     networks:
+      - web_gateway_local
       - odoo-network-dev
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=odoo-network-dev"
-      - "traefik.http.routers.odoo-patco-dev.rule=Host(`patco.local`)"
+      - "traefik.http.routers.odoo-patco-dev.rule=Host(`patco.192.168.18.190.nip.io`)"
       - "traefik.http.routers.odoo-patco-dev.entrypoints=web"
       - "traefik.http.routers.odoo-patco-dev.service=odoo-web-patco-dev"
       - "traefik.http.services.odoo-web-patco-dev.loadbalancer.server.port=8069"
-      - "traefik.http.routers.odoo-websocket-patco-dev.rule=Host(`patco.local`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.odoo-websocket-patco-dev.rule=Host(`patco.192.168.18.190.nip.io`) && PathPrefix(`/websocket`)"
       - "traefik.http.routers.odoo-websocket-patco-dev.entrypoints=web"
       - "traefik.http.routers.odoo-websocket-patco-dev.priority=100"
       - "traefik.http.routers.odoo-websocket-patco-dev.service=odoo-websocket-patco-dev"
       - "traefik.http.services.odoo-websocket-patco-dev.loadbalancer.server.port=8072"
-
+      # --- AÑADE ESTA LÍNEA ---
+      - "traefik.docker.network=web_gateway_local"
+      
   # ===== ODOO ANDESSUYO INIT (DEV) =====
   odoo-andessuyo-init-dev:
     profiles: ["development"]
@@ -186,8 +163,8 @@ services:
         condition: service_completed_successfully
       db-init-andessuyo-dev:
         condition: service_completed_successfully
-      traefik:
-        condition: service_started
+      #traefik:
+      #  condition: service_started
     command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db-filter=^odoo_andessuyo$", "--data-dir=/var/lib/odoo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
     environment:
       DB_HOST: db-dev
@@ -200,19 +177,22 @@ services:
       - ./extra-addons:/mnt/extra-addons
       - ./logs:/var/log/odoo
     networks:
+      - web_gateway_local
       - odoo-network-dev
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=odoo-network-dev"
-      - "traefik.http.routers.odoo-andessuyo-dev.rule=Host(`andessuyo.local`)"
+      - "traefik.http.routers.odoo-andessuyo-dev.rule=Host(`andessuyo.192.168.18.190.nip.io`)"
       - "traefik.http.routers.odoo-andessuyo-dev.entrypoints=web"
       - "traefik.http.routers.odoo-andessuyo-dev.service=odoo-web-andessuyo-dev"
       - "traefik.http.services.odoo-web-andessuyo-dev.loadbalancer.server.port=8069"
-      - "traefik.http.routers.odoo-websocket-andessuyo-dev.rule=Host(`andessuyo.local`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.odoo-websocket-andessuyo-dev.rule=Host(`andessuyo.192.168.18.190.nip.io`) && PathPrefix(`/websocket`)"
       - "traefik.http.routers.odoo-websocket-andessuyo-dev.entrypoints=web"
       - "traefik.http.routers.odoo-websocket-andessuyo-dev.priority=100"
       - "traefik.http.routers.odoo-websocket-andessuyo-dev.service=odoo-websocket-andessuyo-dev"
       - "traefik.http.services.odoo-websocket-andessuyo-dev.loadbalancer.server.port=8072"
+      # --- AÑADE ESTA LÍNEA ---
+      - "traefik.docker.network=web_gateway_local"
 
   # ===== DB (PRODUCCIÓN) =====
   db-prod:
@@ -426,4 +406,6 @@ networks:
     name: odoo-patco-network-prod
     driver: bridge
   web_gateway:
+    external: true
+  web_gateway_local:
     external: true

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="fsm_order_form_patco_leader" model="ir.ui.view">
+            <field name="name">fsm.order.form.patco.leader</field>
+            <field name="model">fsm.order</field>
+            <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@name='equipements_page']" position="inside">
+                    <group string="Leader Actions">
+                        <button name="action_complete" type="object" string="Marcar completada" class="oe_highlight"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

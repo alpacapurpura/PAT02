@@ -10,6 +10,10 @@
 7. [Referencia de Servicios](#referencia-de-servicios)
 
 ---
+Instalar un módulo en DEV desde comandos
+docker compose --profile development run --rm odoo-patco-init-dev sh -lc "python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -u patco_reports --stop-after-init"
+
+docker compose --profile development run --rm odoo-patco-init-dev sh -lc "python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -i patco_equipment --stop-after-init"
 
 ## 📌 Resumen de Problemas Comunes
 
@@ -96,6 +100,10 @@ docker compose exec -T db-dev psql -U odoo odoo_patco < backup_file.sql
 
 # LIMPIAR assets corruptos (CSS/JS)
 docker compose exec db-dev psql -U odoo -d odoo_patco -c "DELETE FROM ir_attachment WHERE res_model = 'ir.ui.view' AND (name ILIKE '%.assets_%.css' OR name ILIKE '%.assets_%.js');"
+# Andessuyo PROD
+docker compose exec db-prod psql -U odoo -d odoo_andessuyo -c "DELETE FROM ir_attachment WHERE res_model = 'ir.ui.view' AND (name ILIKE '%.assets_%.css' OR name ILIKE '%.assets_%.js');"
+# PATCO PROD
+docker compose exec db-prod psql -U odoo -d odoo_patco -c "DELETE FROM ir_attachment WHERE res_model = 'ir.ui.view' AND (name ILIKE '%.assets_%.css' OR name ILIKE '%.assets_%.js');"
 
 # REINICIAR Odoo después de limpiar assets
 docker compose --profile development restart odoo-patco-dev

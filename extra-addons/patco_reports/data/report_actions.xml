@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="sale.action_report_saleorder" model="ir.actions.report">
+            <field name="paperformat_id" ref="patco_reports.paperformat_patco_letter"/>
+        </record>
+        <record id="account.account_invoices" model="ir.actions.report">
+            <field name="paperformat_id" ref="patco_reports.paperformat_patco_letter"/>
+        </record>
+        <record id="account.account_invoices_without_payment" model="ir.actions.report">
+            <field name="paperformat_id" ref="patco_reports.paperformat_patco_letter"/>
+        </record>
+        <record id="account.action_report_payment_receipt" model="ir.actions.report">
+            <field name="paperformat_id" ref="patco_reports.paperformat_patco_letter"/>
+        </record>
+        <record id="account.action_report_account_statement" model="ir.actions.report">
+            <field name="paperformat_id" ref="patco_reports.paperformat_patco_letter"/>
+        </record>
+    </data>
+</odoo>

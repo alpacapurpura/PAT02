@@ -14,20 +14,9 @@
         Odoo has a bad design to do aggregate lines, see here
         https://github.com/odoo/odoo/blob/15.0/addons/stock/models/stock_move_line.py#L738
         -->
-        <xpath
-            expr="//t[@t-value=&quot;o.move_line_ids.mapped(&apos;lot_id&apos;)&quot;]"
-            position="attributes"
-        >
-            <attribute
-                name="t-value"
-                add="or (o.move_ids.filtered('elaboration_ids') | o.move_ids.filtered('elaboration_note'))"
-                separator=" "
-            />
-            <attribute
-                name="groups"
-                add="sale_elaboration.group_elaboration_note_on_delivery_slip"
-                separator=", "
-            />
+        <xpath expr="//t[@t-set='has_serial_number']" position="attributes">
+            <attribute name="t-value" add="or (o.move_ids.filtered('elaboration_ids') | o.move_ids.filtered('elaboration_note'))" separator=" "/>
+            <attribute name="groups" add="sale_elaboration.group_elaboration_note_on_delivery_slip" separator=", "/>
         </xpath>
         <xpath expr="//p[span[@t-field='move.description_picking']]" position="after">
             <t

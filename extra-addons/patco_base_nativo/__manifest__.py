@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Patco Base Nativo',
+    'name': 'Patco Base - Módulos Nativos',
     'version': '18.0.1.0.0',
     'summary': 'PATCO - Módulo de gestión administrativa Nativa',
     'description': """
@@ -29,7 +29,7 @@
 
         # --- Finanzas y Contratos ---
         'account',          # Módulo de Facturación y Contabilidad (Cobros y Pagos)
-        'analytic',         # Módulo de Costos (Contabilidad Analítica)
+        #'analytic',         # Módulo de Costos (Contabilidad Analítica)
     ],
     'demo': [],
     'installable': True,

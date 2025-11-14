@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="maintenance_request_action_mobile_technician" model="ir.actions.act_window">
+            <field name="name">Mis Órdenes de Mantenimiento</field>
+            <field name="res_model">maintenance.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{
+                'search_default_active': True,
+                'default_user_id': uid,
+            }</field>
+            <field name="domain">['|', ('user_id', '=', uid), ('technician_id', '=', uid)]</field>
+        </record>
+
+        <menuitem id="menu_mobile_technician" name="Mantenimiento (Móvil)" parent="maintenance.menu_maintenance_title" sequence="5" groups="base.group_user"/>
+        <menuitem id="menu_mobile_technician_requests" name="Mis Órdenes" parent="menu_mobile_technician" action="maintenance_request_action_mobile_technician" sequence="1" groups="base.group_user"/>
+
+        <record id="fsm_order_action_leader_dashboard" model="ir.actions.act_window">
+            <field name="name">Panel Líder Técnico</field>
+            <field name="res_model">fsm.order</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{
+                'search_default_todo': True,
+            }</field>
+        </record>
+        <menuitem id="menu_leader_dashboard" name="Panel Líder" parent="maintenance.menu_maintenance_title" action="fsm_order_action_leader_dashboard" sequence="6" groups="fieldservice.group_fsm_dispatcher"/>
+    </data>
+</odoo>
