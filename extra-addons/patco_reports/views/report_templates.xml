@@ -111,12 +111,24 @@
                     <div style="flex:2;padding-right:40px;">
                         <div style="font-weight:bold; font-size:14px; margin-bottom:8px; border-bottom:1px solid #000; padding-bottom:4px;">IMPORTE EN LETRAS</div>
                         <t t-set="txt" t-value="o.currency_id.with_context(lang='es_PE').amount_to_text(o.amount_total)"/>
-                        <t t-set="parts" t-value="(' con ' in txt) and txt.split(' con ') or ((' y ' in txt) and txt.split(' y ') or [txt])"/>
-                        <t t-set="unit_label" t-value="'NUEVOS SOLES' if o.currency_id.name == 'PEN' else ('DOLARES' if o.currency_id.name == 'USD' else (o.currency_id.currency_unit_label or ''))"/>
+                        <t t-set="parts" t-value="(' con ' in txt.lower()) and txt.lower().split(' con ', 1) or ((' y ' in txt.lower()) and txt.lower().rsplit(' y ', 1) or [txt.lower()])"/>
                         <t t-set="subunit_label" t-value="'CÉNTIMOS' if o.currency_id.name == 'PEN' else ('CENTAVOS' if o.currency_id.name == 'USD' else (o.currency_id.currency_subunit_label or ''))"/>
-                        <t t-set="head" t-value="parts[0].replace(' ' + (o.currency_id.currency_unit_label or ''), '').replace(' ' + (o.currency_id.currency_unit_label or '').lower(), '').strip()"/>
-                        <t t-set="tail" t-value="(len(parts) > 1 and parts[1] or '').replace(' ' + (o.currency_id.currency_subunit_label or ''), '').replace(' ' + (o.currency_id.currency_subunit_label or '').lower(), '').strip()"/>
-                        <div style="font-size:12px; margin-bottom:15px; min-height:40px;"><span t-esc="(head + (unit_label and (' ' + unit_label) or '') + (tail and (' Y ' + tail + (subunit_label and (' ' + subunit_label) or '')) or '')).upper()"/></div>
+                        <t t-set="head" t-value="parts[0]
+                            .replace(' ' + (o.currency_id.currency_unit_label or ''), '')
+                            .replace(' ' + (o.currency_id.currency_unit_label or '').lower(), '')
+                            .replace(' soles', '').replace(' sol', '')
+                            .replace(' dólares', '').replace(' dólar', '')
+                            .replace(' dolares', '').replace(' dolar', '')
+                            .strip()"/>
+                        <t t-set="tail" t-value="(len(parts) > 1 and parts[1] or '')
+                            .replace(' ' + (o.currency_id.currency_subunit_label or ''), '')
+                            .replace(' ' + (o.currency_id.currency_subunit_label or '').lower(), '')
+                            .replace(' soles', '').replace(' sol', '')
+                            .replace(' dólares', '').replace(' dólar', '')
+                            .replace(' dolares', '').replace(' dolar', '')
+                            .replace('  ', ' ')
+                            .strip()"/>
+                        <div style="font-size:12px; margin-bottom:15px; min-height:40px;"><span t-esc="(head + (tail and (' CON ' + tail + (subunit_label and (' ' + subunit_label) or '')) or '')).upper()"/></div>
                          <div style="font-weight:bold; font-size:14px; margin-bottom:8px; border-bottom:1px solid #000; padding-bottom:4px;">NOTAS</div>
                         <div t-field="o.note" style="font-size:12px; margin-bottom:15px; min-height:40px;"/>
                     </div>
