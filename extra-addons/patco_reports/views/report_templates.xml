@@ -51,7 +51,7 @@
                 <t t-foreach="docs" t-as="o">
                     <div class="page" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id" style="font-family: Arial, sans-serif; color:#000; font-size:12px">
                         <t t-call="patco_reports.patco_company_header"/>
-            <div style="display:flex; gap:12px; margin-top:6px">
+                        <div style="display:flex; gap:12px; margin-top:6px">
                             <div style="flex:1; padding:12px;">
                                 <div style="font-weight:bold; font-size:14px; margin-bottom:8px; border-bottom:1px solid #000; padding-bottom:4px;">CLIENTE</div>
                                 <div style="font-size:12px; margin-bottom:4px;">CLIENTE: <span t-esc="o.partner_id.name"/></div>
@@ -67,9 +67,8 @@
                                 <div style="font-size:12px; margin-bottom:4px;">FECHA EMISIÓN: <span t-field="o.date_order" t-options="{'widget': 'date'}"/></div>
                                 <div style="font-size:12px; margin-bottom:4px;">FECHA DE VCTO: <span t-field="o.validity_date" t-options="{'widget': 'date'}"/></div>
                                 <div style="font-size:12px; margin-bottom:4px;">VENDEDOR: <span t-esc="o.user_id.name or ''"/></div>
-                                <div style="font-size:12px; margin-bottom:4px;">CONDICIÓN PAGO: 
-                                    <t t-if="o.partner_id.company_type == 'company' or (o.partner_id.vat and len(o.partner_id.vat) == 11)">FACTURA</t>
-                                    <t t-else="">BOLETA</t>
+                                <div style="font-size:12px; margin-bottom:4px;">CONDICIÓN DE PAGO: 
+                                    <span t-esc="o.payment_term_id.name or ''"/>
                                 </div>
                                 <div style="font-size:12px; margin-bottom:4px;">MONEDA: 
                                     <span t-if="o.currency_id.name == 'PEN'">NUEVOS SOLES</span>
@@ -111,16 +110,13 @@
                     <div style="display:flex; gap:12px; margin-top:14px;">
                     <div style="flex:2;padding-right:40px;">
                         <div style="font-weight:bold; font-size:14px; margin-bottom:8px; border-bottom:1px solid #000; padding-bottom:4px;">IMPORTE EN LETRAS</div>
-                        <div style="font-size:12px; margin-bottom:15px; min-height:40px;"><span t-esc="(
-                            o.currency_id.with_context(lang='es_PE').amount_to_text(o.amount_total)
-                            .split(' con ')[0]
-                            .replace(' ' + (o.currency_id.currency_unit_label or ''), '')
-                            .replace(' ' + (o.currency_id.currency_unit_label or '').lower(), '')
-                        ).upper().strip()"/>
-                        <span t-if="o.currency_id.name == 'PEN'"> NUEVOS SOLES</span>
-                        <span t-elif="o.currency_id.name == 'USD'"> DOLARES AMERICANOS</span>
-                        <span t-else="" t-esc="o.currency_id.name or ''"/>
-                        </div>
+                        <t t-set="txt" t-value="o.currency_id.with_context(lang='es_PE').amount_to_text(o.amount_total)"/>
+                        <t t-set="parts" t-value="(' con ' in txt) and txt.split(' con ') or ((' y ' in txt) and txt.split(' y ') or [txt])"/>
+                        <t t-set="unit_label" t-value="'NUEVOS SOLES' if o.currency_id.name == 'PEN' else ('DOLARES' if o.currency_id.name == 'USD' else (o.currency_id.currency_unit_label or ''))"/>
+                        <t t-set="subunit_label" t-value="'CÉNTIMOS' if o.currency_id.name == 'PEN' else ('CENTAVOS' if o.currency_id.name == 'USD' else (o.currency_id.currency_subunit_label or ''))"/>
+                        <t t-set="head" t-value="parts[0].replace(' ' + (o.currency_id.currency_unit_label or ''), '').replace(' ' + (o.currency_id.currency_unit_label or '').lower(), '').strip()"/>
+                        <t t-set="tail" t-value="(len(parts) > 1 and parts[1] or '').replace(' ' + (o.currency_id.currency_subunit_label or ''), '').replace(' ' + (o.currency_id.currency_subunit_label or '').lower(), '').strip()"/>
+                        <div style="font-size:12px; margin-bottom:15px; min-height:40px;"><span t-esc="(head + (unit_label and (' ' + unit_label) or '') + (tail and (' Y ' + tail + (subunit_label and (' ' + subunit_label) or '')) or '')).upper()"/></div>
                          <div style="font-weight:bold; font-size:14px; margin-bottom:8px; border-bottom:1px solid #000; padding-bottom:4px;">NOTAS</div>
                         <div t-field="o.note" style="font-size:12px; margin-bottom:15px; min-height:40px;"/>
                     </div>
@@ -131,7 +127,7 @@
                                 <td style="padding:6px; text-align:right; font-size:11px; border:1px solid #000;"><span t-field="o.amount_untaxed" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
                             </tr>
                             <tr>
-                                <td style="padding:6px; font-size:11px; border:1px solid #000;"><strong>IMPUESTO IGV18%</strong></td>
+                                <td style="padding:6px; font-size:11px; border:1px solid #000;"><strong>IGV 18%</strong></td>
                                 <td style="padding:6px; text-align:right; font-size:11px; border:1px solid #000;"><span t-field="o.amount_tax" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
                             </tr>
                             <tr style="background-color:#f0f0f0;">
