@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_attachment_form_patco_preview" model="ir.ui.view">
+            <field name="name">ir.attachment.form.patco.preview</field>
+            <field name="model">ir.attachment</field>
+            <field name="inherit_id" ref="base.view_attachment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group[1]" position="after">
+                    <group string="Preview">
+                        <field name="datas" widget="pdf_viewer" filename="name" nolabel="1"
+                               invisible="type != 'binary' or mimetype != 'application/pdf'"/>
+                        <field name="datas" widget="image" filename="name" nolabel="1"
+                               invisible="type != 'binary' or (mimetype and mimetype not in ('image/png','image/jpeg','image/jpg','image/webp'))"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

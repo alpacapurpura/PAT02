@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_employee_view_form_patco_fsm" model="ir.ui.view">
+            <field name="name">hr.employee.form.patco.fsm</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group[1]" position="inside">
+                    <group string="FSM">
+                        <field name="x_is_fsm_worker"/>
+                        <field name="x_fsm_person_id"/>
+                        <button name="action_sync_to_fsm" type="object" string="Sincronizar con FSM" class="btn-primary"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

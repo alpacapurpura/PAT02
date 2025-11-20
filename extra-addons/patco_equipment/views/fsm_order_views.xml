@@ -8,27 +8,26 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='person_id']" position="after">
                     <group string="Equipment">
-                        <field name="x_equipment_id" options="{'no_create': True}"/>
-                        <field name="x_equipment_code" readonly="1" invisible="not x_equipment_id"/>
-                        <field name="x_equipment_count" readonly="1"/>
-                        <field name="x_equipment_categories" readonly="1" widget="many2many_tags"/>
-                        <field name="x_all_equipment_codes" readonly="1"/>
-                    </group>
-                    <group string="Multiple Equipment">
-                        <field name="x_equipment_ids" nolabel="1" widget="many2many_tags" options="{'no_create': True}">
+                        <field name="x_equipment_ids" nolabel="1" widget="many2many_tags" options="{'no_create': True}" domain="[('x_customer_id','=',customer_id)]">
                             <list>
                                 <field name="name"/>
                             </list>
                         </field>
-                        <div class="oe_button_box" name="equipment_button_box">
-                            <button name="action_view_all_equipment" type="object" class="oe_stat_button" icon="fa-cogs">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value"><field name="x_equipment_count"/></span>
-                                    <span class="o_stat_text">Equipos</span>
-                                </div>
-                            </button>
-                        </div>
+                        <field name="customer_id" readonly="1"/>
+                        <field name="x_equipment_code" readonly="1"/>
+                        <field name="x_equipment_count" readonly="1"/>
+                        <field name="x_equipment_categories" readonly="1" widget="many2many_tags"/>
+                        <field name="x_all_equipment_codes" readonly="1"/>
                     </group>
+                    <div class="oe_button_box" name="equipment_button_box">
+                        <button name="action_view_all_equipment" type="object" class="oe_stat_button" icon="fa-cogs">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="x_equipment_count"/></span>
+                                <span class="o_stat_text">Equipos</span>
+                            </div>
+                        </button>
+                        <button type="action" name="%(patco_equipment.action_assign_equipment_wizard)d" string="Agregar activo" class="oe_stat_button" icon="fa-plus" invisible="not customer_id or not location_id or not request_early"/>
+                    </div>
                 </xpath>
             </field>
         </record>
@@ -52,12 +51,11 @@
             <field name="inherit_id" ref="fieldservice.fsm_order_search_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='person_id']" position="after">
-                    <field name="x_equipment_id"/>
                     <field name="x_equipment_code"/>
                     <field name="x_equipment_ids"/>
                 </xpath>
                 <xpath expr="//group" position="inside">
-                    <filter name="group_equipment" string="Equipo" context="{'group_by': 'x_equipment_id'}"/>
+                    <filter name="group_equipment" string="Equipo" context="{'group_by': 'x_equipment_code'}"/>
                     <filter name="group_equipment_category" string="Categoría Equipo" context="{'group_by': 'x_equipment_categories'}"/>
                 </xpath>
             </field>

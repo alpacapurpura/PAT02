@@ -7,7 +7,7 @@
 services:
   # ===== DB (DESARROLLO) =====
   db-dev:
-    profiles: ["development"]
+    profiles: [ "patco-dev", "andessuyo-dev" ]
     build:
       context: ./ai-services/postgres-pgvector
       dockerfile: Dockerfile
@@ -24,7 +24,7 @@ services:
         aliases:
           - db
     healthcheck:
-      test: ["CMD-SHELL", "PGPASSWORD=$POSTGRES_PASSWORD psql -U odoo -d odoo_patco -c 'SELECT 1'"]
+      test: [ "CMD-SHELL", "PGPASSWORD=$$POSTGRES_PASSWORD psql -U odoo -d odoo_patco -c 'SELECT 1'" ]
       interval: 30s
       timeout: 10s
       retries: 10
@@ -32,7 +32,7 @@ services:
 
   # Inicializa DB secundaria (andessuyo) en dev
   db-init-andessuyo-dev:
-    profiles: ["development"]
+    profiles: [ "andessuyo-dev" ]
     image: postgres:15
     depends_on:
       db-dev:
@@ -60,7 +60,7 @@ services:
 
   # ===== ODOO PATCO INIT (DEV) =====
   odoo-patco-init-dev:
-    profiles: ["development"]
+    profiles: [ "patco-dev" ]
     build:
       context: .
       dockerfile: Dockerfile
@@ -68,7 +68,7 @@ services:
     depends_on:
       db-dev:
         condition: service_healthy
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
+    command: [ "python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init" ]
     environment:
       DB_HOST: db-dev
       DB_PORT: 5432
@@ -84,7 +84,7 @@ services:
 
   # ===== ODOO PATCO (DEV) =====
   odoo-patco-dev:
-    profiles: ["development"]
+    profiles: [ "patco-dev" ]
     build:
       context: .
       dockerfile: Dockerfile
@@ -92,11 +92,9 @@ services:
     depends_on:
       odoo-patco-init-dev:
         condition: service_completed_successfully
-      db-init-andessuyo-dev:
-        condition: service_completed_successfully
       #traefik:
       #  condition: service_started
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--db-filter=^odoo_patco$", "--data-dir=/var/lib/odoo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    command: [ "python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--db-filter=^odoo_patco$", "--data-dir=/var/lib/odoo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2" ]
     environment:
       DB_HOST: db-dev
       DB_PORT: 5432
@@ -112,7 +110,6 @@ services:
       - odoo-network-dev
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=odoo-network-dev"
       - "traefik.http.routers.odoo-patco-dev.rule=Host(`patco.192.168.18.190.nip.io`)"
       - "traefik.http.routers.odoo-patco-dev.entrypoints=web"
       - "traefik.http.routers.odoo-patco-dev.service=odoo-web-patco-dev"
@@ -124,10 +121,122 @@ services:
       - "traefik.http.services.odoo-websocket-patco-dev.loadbalancer.server.port=8072"
       # --- AÑADE ESTA LÍNEA ---
       - "traefik.docker.network=web_gateway_local"
-      
+
+  # ===== AI SERVICES (DEV) =====
+  ai-mcp-dev:
+    profiles: [ "ai-patco-dev", "patco-dev" ]
+    build:
+      context: ./ai-services/mcp
+      dockerfile: Dockerfile
+    container_name: patco-mcp-server-dev
+    depends_on:
+      db-dev:
+        condition: service_healthy
+      odoo-patco-dev:
+        condition: service_started
+    command: [ "python", "-m", "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8080", "--reload" ]
+    environment:
+      DB_HOST: db-dev
+      DB_PORT: 5432
+      DB_NAME: odoo_patco
+      DB_USER: odoo
+      DB_PASSWORD: P4tc0_2
+      DATABASE_URL: postgresql://odoo:P4tc0_2@db-dev:5432/odoo_patco
+      ODOO_URL: http://odoo-patco-app:8069
+      ODOO_DB: odoo_patco
+      ODOO_USERNAME: admin
+      ODOO_PASSWORD: admin
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8080
+      MCP_DEBUG: "true"
+      MCP_LOG_LEVEL: INFO
+      JWT_ALGORITHM: HS256
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      EMBEDDING_MODEL: text-embedding-004
+      EMBEDDING_DIMENSION: 768
+      VECTOR_SEARCH_LIMIT: 10
+      RATE_LIMIT_REQUESTS: 100
+      RATE_LIMIT_WINDOW: 60
+      CORS_ORIGINS: http://patco.192.168.18.190.nip.io
+      CACHE_TTL: 300
+      CACHE_MAX_SIZE: 1000
+    env_file:
+      - ./.backup-code/.env
+    volumes:
+      - ./ai-services/mcp:/app
+    networks:
+      - odoo-network-dev
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  ai-langgraph-dev:
+    profiles: [ "ai-patco-dev", "patco-dev" ]
+    build:
+      context: ./ai-services/langgraph
+      dockerfile: Dockerfile
+    container_name: patco-langgraph-server-dev
+    depends_on:
+      db-dev:
+        condition: service_healthy
+      ai-mcp-dev:
+        condition: service_healthy
+    command: [ "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001", "--reload" ]
+    environment:
+      LANGGRAPH_HOST: 0.0.0.0
+      LANGGRAPH_PORT: 8001
+      LANGGRAPH_DEBUG: "true"
+      LANGGRAPH_LOG_LEVEL: INFO
+      DATABASE_URL: postgresql://odoo:P4tc0_2@db-dev:5432/odoo_patco
+      MCP_SERVER_URL: http://patco-mcp-server-dev:8080
+      MCP_TIMEOUT: 30
+      EMBEDDING_MODEL: text-embedding-004
+      EMBEDDING_DIMENSION: 768
+      MAX_CONVERSATION_HISTORY: 50
+      CONVERSATION_TIMEOUT: 1800
+      CACHE_TTL: 300
+      CACHE_MAX_SIZE: 1000
+      CORS_ORIGINS: http://patco.192.168.18.190.nip.io
+    env_file:
+      - ./.backup-code/.env
+    volumes:
+      - ./ai-services/langgraph:/app
+    networks:
+      - odoo-network-dev
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8001/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  ai-indexer-dev:
+    profiles: [ "ai-patco-dev", "patco-dev" ]
+    build:
+      context: ./ai-services/indexer
+      dockerfile: Dockerfile
+    container_name: patco-document-indexer-dev
+    depends_on:
+      db-dev:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://odoo:P4tc0_2@db-dev:5432/odoo_patco
+      ODOO_URL: http://odoo-patco-app:8069
+      INDEXING_BATCH_SIZE: 50
+      INDEXING_CYCLE_INTERVAL: 300
+    env_file:
+      - ./.backup-code/.env
+    volumes:
+      - ./ai-services/indexer:/app
+    networks:
+      - odoo-network-dev
+
   # ===== ODOO ANDESSUYO INIT (DEV) =====
   odoo-andessuyo-init-dev:
-    profiles: ["development"]
+    profiles: [ "andessuyo-dev" ]
     build:
       context: .
       dockerfile: Dockerfile
@@ -137,7 +246,7 @@ services:
         condition: service_healthy
       db-init-andessuyo-dev:
         condition: service_completed_successfully
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
+    command: [ "python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init" ]
     environment:
       DB_HOST: db-dev
       DB_PORT: 5432
@@ -153,7 +262,7 @@ services:
 
   # ===== ODOO ANDESSUYO (DEV) =====
   odoo-andessuyo-dev:
-    profiles: ["development"]
+    profiles: [ "andessuyo-dev" ]
     build:
       context: .
       dockerfile: Dockerfile
@@ -165,7 +274,7 @@ services:
         condition: service_completed_successfully
       #traefik:
       #  condition: service_started
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db-filter=^odoo_andessuyo$", "--data-dir=/var/lib/odoo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    command: [ "python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db-filter=^odoo_andessuyo$", "--data-dir=/var/lib/odoo", "--without-demo=all", "--db_host=db-dev", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2" ]
     environment:
       DB_HOST: db-dev
       DB_PORT: 5432
@@ -181,7 +290,6 @@ services:
       - odoo-network-dev
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=odoo-network-dev"
       - "traefik.http.routers.odoo-andessuyo-dev.rule=Host(`andessuyo.192.168.18.190.nip.io`)"
       - "traefik.http.routers.odoo-andessuyo-dev.entrypoints=web"
       - "traefik.http.routers.odoo-andessuyo-dev.service=odoo-web-andessuyo-dev"
@@ -196,7 +304,7 @@ services:
 
   # ===== DB (PRODUCCIÓN) =====
   db-prod:
-    profiles: ["production"]
+    profiles: [ "patco-prod", "andessuyo-prod" ]
     build:
       context: ./ai-services/postgres-pgvector
       dockerfile: Dockerfile
@@ -211,14 +319,14 @@ services:
     networks:
       - odoo-network-prod
     healthcheck:
-      test: ["CMD-SHELL", "PGPASSWORD=$POSTGRES_PASSWORD psql -U odoo -d odoo_patco -c 'SELECT 1'"]
+      test: [ "CMD-SHELL", "PGPASSWORD=$$POSTGRES_PASSWORD psql -U odoo -d odoo_patco -c 'SELECT 1'" ]
       interval: 30s
       timeout: 10s
       retries: 10
       start_period: 120s
 
   db-init-andessuyo-prod:
-    profiles: ["production"]
+    profiles: [ "andessuyo-prod" ]
     image: postgres:15
     depends_on:
       db-prod:
@@ -245,7 +353,7 @@ services:
     restart: "no"
 
   odoo-patco-init-prod:
-    profiles: ["production"]
+    profiles: [ "patco-prod" ]
     build:
       context: .
       dockerfile: Dockerfile
@@ -253,7 +361,7 @@ services:
     depends_on:
       db-prod:
         condition: service_healthy
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
+    command: [ "python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init" ]
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432
@@ -268,7 +376,7 @@ services:
     restart: "no"
 
   odoo-andessuyo-init-prod:
-    profiles: ["production"]
+    profiles: [ "andessuyo-prod" ]
     build:
       context: .
       dockerfile: Dockerfile
@@ -278,7 +386,7 @@ services:
         condition: service_healthy
       db-init-andessuyo-prod:
         condition: service_completed_successfully
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init"]
+    command: [ "python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--init=l10n_pe", "--load-language=es_PE", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2", "--stop-after-init" ]
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432
@@ -294,17 +402,15 @@ services:
 
   # ===== ODOO PATCO (PROD) =====
   odoo-patco-prod:
-    profiles: ["production"]
+    profiles: [ "patco-prod" ]
     build:
       context: .
       dockerfile: Dockerfile
     container_name: odoo-patco-app-prod
     depends_on:
-      db-init-andessuyo-prod:
-        condition: service_completed_successfully
       odoo-patco-init-prod:
         condition: service_completed_successfully
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--db-filter=^odoo_patco$", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    command: [ "python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_patco", "--db-filter=^odoo_patco$", "--without-demo=all", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2" ]
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432
@@ -319,7 +425,7 @@ services:
       - odoo-network-prod
       - web_gateway
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/database/selector || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8069/web/database/selector || exit 1" ]
       interval: 60s
       timeout: 10s
       retries: 3
@@ -338,9 +444,129 @@ services:
       - "traefik.http.routers.odoo-patco-websocket-prod.tls.certresolver=letsencrypt"
       - "traefik.http.services.odoo-websocket-patco-prod.loadbalancer.server.port=8072"
 
+  # ===== AI SERVICES (PROD) =====
+  ai-mcp-prod:
+    profiles: [ "ai-patco-prod", "patco-prod" ]
+    build:
+      context: ./ai-services/mcp
+      dockerfile: Dockerfile
+    container_name: patco-mcp-server-prod
+    depends_on:
+      db-prod:
+        condition: service_healthy
+      odoo-patco-prod:
+        condition: service_started
+    environment:
+      DB_HOST: db-prod
+      DB_PORT: 5432
+      DB_NAME: odoo_patco
+      DB_USER: odoo
+      DB_PASSWORD: P4tc0_2
+      DATABASE_URL: postgresql://odoo:P4tc0_2@db-prod:5432/odoo_patco
+      ODOO_URL: http://odoo-patco-app-prod:8069
+      ODOO_DB: odoo_patco
+      ODOO_USERNAME: admin
+      ODOO_PASSWORD: admin
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8080
+      MCP_DEBUG: "false"
+      MCP_LOG_LEVEL: INFO
+      JWT_ALGORITHM: HS256
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      EMBEDDING_MODEL: text-embedding-004
+      EMBEDDING_DIMENSION: 768
+      VECTOR_SEARCH_LIMIT: 10
+      RATE_LIMIT_REQUESTS: 100
+      RATE_LIMIT_WINDOW: 60
+      CACHE_TTL: 300
+      CACHE_MAX_SIZE: 1000
+    env_file:
+      - ./.backup-code/.env
+    networks:
+      - odoo-network-prod
+      - web_gateway
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web_gateway"
+      - "traefik.http.routers.ai-mcp-prod.rule=Host(`ai.patcoperu.com`)"
+      - "traefik.http.routers.ai-mcp-prod.entrypoints=websecure"
+      - "traefik.http.routers.ai-mcp-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.ai-mcp-prod.service=ai-mcp-prod"
+      - "traefik.http.services.ai-mcp-prod.loadbalancer.server.port=8080"
+
+  ai-langgraph-prod:
+    profiles: [ "ai-patco-prod", "patco-prod" ]
+    build:
+      context: ./ai-services/langgraph
+      dockerfile: Dockerfile
+    container_name: patco-langgraph-server-prod
+    depends_on:
+      db-prod:
+        condition: service_healthy
+      ai-mcp-prod:
+        condition: service_healthy
+    environment:
+      LANGGRAPH_HOST: 0.0.0.0
+      LANGGRAPH_PORT: 8001
+      LANGGRAPH_DEBUG: "false"
+      LANGGRAPH_LOG_LEVEL: INFO
+      DATABASE_URL: postgresql://odoo:P4tc0_2@db-prod:5432/odoo_patco
+      MCP_SERVER_URL: http://patco-mcp-server-prod:8080
+      MCP_TIMEOUT: 30
+      EMBEDDING_MODEL: text-embedding-004
+      EMBEDDING_DIMENSION: 768
+      MAX_CONVERSATION_HISTORY: 50
+      CONVERSATION_TIMEOUT: 1800
+      CACHE_TTL: 300
+      CACHE_MAX_SIZE: 1000
+    env_file:
+      - ./.backup-code/.env
+    networks:
+      - odoo-network-prod
+      - web_gateway
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8001/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web_gateway"
+      - "traefik.http.routers.ai-langgraph-prod.rule=Host(`lg.patcoperu.com`)"
+      - "traefik.http.routers.ai-langgraph-prod.entrypoints=websecure"
+      - "traefik.http.routers.ai-langgraph-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.ai-langgraph-prod.service=ai-langgraph-prod"
+      - "traefik.http.services.ai-langgraph-prod.loadbalancer.server.port=8001"
+
+  ai-indexer-prod:
+    profiles: [ "ai-patco-prod", "patco-prod" ]
+    build:
+      context: ./ai-services/indexer
+      dockerfile: Dockerfile
+    container_name: patco-document-indexer-prod
+    depends_on:
+      db-prod:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://odoo:P4tc0_2@db-prod:5432/odoo_patco
+      ODOO_URL: http://odoo-patco-app-prod:8069
+      INDEXING_BATCH_SIZE: 50
+      INDEXING_CYCLE_INTERVAL: 300
+    env_file:
+      - ./.backup-code/.env
+    networks:
+      - odoo-network-prod
+
   # ===== ODOO ANDESSUYO (PROD) =====
   odoo-andessuyo-prod:
-    profiles: ["production"]
+    profiles: [ "andessuyo-prod" ]
     build:
       context: .
       dockerfile: Dockerfile
@@ -350,7 +576,7 @@ services:
         condition: service_completed_successfully
       odoo-andessuyo-init-prod:
         condition: service_completed_successfully
-    command: ["python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db-filter=^odoo_andessuyo$", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2"]
+    command: [ "python3", "/opt/odoo/odoo-bin", "-c", "/etc/odoo/odoo.conf", "-d", "odoo_andessuyo", "--db-filter=^odoo_andessuyo$", "--db_host=db-prod", "--db_port=5432", "--db_user=odoo", "--db_password=P4tc0_2" ]
     environment:
       DB_HOST: db-prod
       DB_PORT: 5432
@@ -365,7 +591,7 @@ services:
       - odoo-network-prod
       - web_gateway
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/database/selector || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8069/web/database/selector || exit 1" ]
       interval: 60s
       timeout: 10s
       retries: 3

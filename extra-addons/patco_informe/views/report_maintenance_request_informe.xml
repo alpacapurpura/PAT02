@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_maintenance_request_informe">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page" style="font-family: DejaVu Sans, Arial, sans-serif; color:#000; font-size:12px">
+                    <t t-call="patco_reports.patco_company_header"/>
+
+                    <div style="margin:12px 0; border-bottom:1px solid #000; padding-bottom:6px; font-weight:600; font-size:14px;">Informe de Mantenimiento</div>
+
+                    <div style="display:flex; gap:12px; margin-top:6px; padding:0 12px">
+                        <div style="flex:1; padding:8px;">
+                            <div style="font-weight:bold; margin-bottom:6px;">Solicitud</div>
+                            <div>Nombre: <span t-esc="o.name"/></div>
+                            <div>Estado: <span t-esc="o.stage_id.name"/></div>
+                            <div>Tipo: <span t-esc="o.maintenance_type"/></div>
+                            <div>Fecha solicitud: <span t-field="o.request_date" t-options="{'widget': 'date'}"/></div>
+                            <div>Inicio: <span t-field="o.report_start_datetime" t-options="{'widget': 'datetime'}"/></div>
+                        </div>
+                        <div style="flex:1; padding:8px;">
+                            <div style="font-weight:bold; margin-bottom:6px;">Equipo</div>
+                            <div>Marca: <span t-esc="o.eq_brand or ''"/></div>
+                            <div>Modelo: <span t-esc="o.eq_model or ''"/></div>
+                            <div>Número de serie: <span t-esc="o.eq_serial_no or ''"/></div>
+                            <div>Cliente: <span t-esc="o.eq_customer_id and o.eq_customer_id.name or ''"/></div>
+                            <div>Ubicación: <span t-esc="o.eq_service_location_id and o.eq_service_location_id.name or ''"/></div>
+                        </div>
+                    </div>
+
+                    <t t-if="o.include_checklists">
+                        <div style="margin:12px 0; font-weight:600;">Checklists utilizados</div>
+                        <div style="margin-bottom:10px;">
+                            <div style="font-weight:bold; margin-bottom:4px;">Entrada</div>
+                            <div t-raw="o.x_req_entry_checklist"/>
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <div style="font-weight:bold; margin-bottom:4px;">Salida</div>
+                            <div t-raw="o.x_req_exit_checklist"/>
+                        </div>
+                    </t>
+
+                    <div style="margin:12px 0; font-weight:600;">Reporte de ejecución</div>
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:bold; margin-bottom:4px;">Notas</div>
+                        <div><span t-esc="o.report_notes or ''"/></div>
+                    </div>
+
+                    <div style="margin-top:8px;">
+                        <t t-foreach="o.report_image_ids" t-as="img">
+                            <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:12px;">
+                                <div>
+                                <img t-att-src="image_data_uri(img.image)" style="max-height:300px; object-fit:contain; border:1px solid #ddd; padding:4px"/>
+                                </div>
+                                <div style="flex:1;">
+                                    <div style="font-weight:600; margin-bottom:4px;">Descripción</div>
+                                    <div><span t-esc="img.description or ''"/></div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div style="display:flex; gap:24px; margin-top:24px;">
+                        <div style="flex:1;">
+                            <div style="height:80px; border-top:1px solid #000; margin-top:40px;"></div>
+                            <div style="text-align:center; font-size:11px;">Firma del técnico</div>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="height:80px; border-top:1px solid #000; margin-top:40px;"></div>
+                            <div style="text-align:center; font-size:11px;">Firma del cliente</div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="fsm_person_view_form_patco_fsm" model="ir.ui.view">
+            <field name="name">fsm.person.form.patco.fsm</field>
+            <field name="model">fsm.person</field>
+            <field name="inherit_id" ref="fieldservice.fsm_person_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet//group" position="inside">
+                    <group string="Employee Link">
+                        <field name="x_employee_id"/>
+                        <button name="action_update_from_employee" type="object" string="Actualizar desde Empleado" class="btn-secondary"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

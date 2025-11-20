@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_employee_patco_fsm,access_hr_employee_patco_fsm,model_hr_employee,base.group_user,1,1,1,0
+access_fsm_person_patco_fsm,access_fsm_person_patco_fsm,fieldservice.model_fsm_person,base.group_user,1,1,1,0

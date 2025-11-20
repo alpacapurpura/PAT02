@@ -9,11 +9,36 @@
 6. [Solución de Problemas Específicos](#solución-de-problemas-específicos)
 7. [Referencia de Servicios](#referencia-de-servicios)
 
+limpiar assets
+http://patco.192.168.18.190.nip.io/web?debug=assets
 ---
 Instalar un módulo en DEV desde comandos
-docker compose --profile development run --rm odoo-patco-init-dev sh -lc "python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -u patco_reports --stop-after-init"
 
-docker compose --profile development run --rm odoo-patco-init-dev sh -lc "python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -i patco_equipment --stop-after-init"
+docker compose --profile patco-dev run --rm odoo-patco-dev python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -u patco_equipment --db_host=db-dev --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --without-demo=all --stop-after-init && docker compose --profile patco-dev restart odoo-patco-dev
+
+Desarrollo (PATCO)
+
+- Instalar módulo nuevo: 
+docker compose --profile patco-dev run --rm odoo-patco-dev python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -i <modulo> --db_host=db-dev --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --stop-after-init
+- Actualizar módulo existente: 
+docker compose --profile patco-dev run --rm odoo-patco-dev python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -u <modulo> --db_host=db-dev --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --stop-after-init
+
+
+Producción (PATCO)
+
+- Instalar módulo nuevo: docker compose --profile patco-prod run --rm odoo-patco-prod python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -i <modulo> --db_host=db-prod --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --stop-after-init
+- Actualizar módulo existente: docker compose --profile patco-prod run --rm odoo-patco-prod python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_patco -u <modulo> --db_host=db-prod --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --stop-after-init
+
+
+Desarrollo (ANDESSUYO)
+
+- Instalar módulo nuevo: docker compose --profile andessuyo-dev run --rm odoo-andessuyo-dev python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_andessuyo -i <modulo> --db_host=db-dev --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --stop-after-init
+- Actualizar módulo existente: docker compose --profile andessuyo-dev run --rm odoo-andessuyo-dev python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_andessuyo -u <modulo> --db_host=db-dev --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --stop-after-init
+Producción (ANDESSUYO)
+
+- Instalar módulo nuevo: docker compose --profile andessuyo-prod run --rm odoo-andessuyo-prod python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_andessuyo -i <modulo> --db_host=db-prod --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --stop-after-init
+- Actualizar módulo existente: docker compose --profile andessuyo-prod run --rm odoo-andessuyo-prod python3 /opt/odoo/odoo-bin -c /etc/odoo/odoo.conf -d odoo_andessuyo -u <modulo> --db_host=db-prod --db_port=5432 --db_user=odoo --db_password=P4tc0_2 --stop-after-init
+
 
 ## 📌 Resumen de Problemas Comunes
 

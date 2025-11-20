@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+"""
+Grafo de Conversación para LangGraph Server
+
+Implementa el grafo principal de conversación usando LangGraph
+para orquestación del agente IA de PATCO Suite.
+
+Autor: PATCO Development Team
+Versión: 1.0.0
+Fecha: Enero 2025
+"""
+
+import asyncio
+from typing import Dict, Any, List, Optional
+
+from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+import structlog
+
+from schemas import ConversationState, CONVERSATION_STATES
+from nodes.message_processor import MessageProcessorNode
+from nodes.context_retriever import ContextRetrieverNode
+from nodes.rag_search import RAGSearchNode
+from nodes.action_planner import ActionPlannerNode
+from nodes.response_generator import ResponseGeneratorNode
+from nodes.action_executor import ActionExecutorNode
+from utils.logging_config import LoggingMixin
+from utils.mcp_client import MCPClient
+
+logger = structlog.get_logger(__name__)
+
+
+class ConversationGraph(LoggingMixin):
+    """Grafo principal de conversación usando LangGraph."""
+    
+    def __init__(self, database_url: str, mcp_client: MCPClient):
+        """
+        Inicializa el grafo de conversación.
+        
+        Args:
+            database_url: URL de conexión a PostgreSQL
+            mcp_client: Cliente MCP para herramientas
+        """
+        self.database_url = database_url
+        self.mcp_client = mcp_client
+        self.checkpointer_context = None
+        self.checkpointer: Optional[AsyncPostgresSaver] = None
+        self.graph = None
+        self._ready = False
+        
+        # Inicializar nodos
+        self.nodes = {
+            "message_processor": MessageProcessorNode(mcp_client),
+            "context_retriever": ContextRetrieverNode(mcp_client),
+            "rag_search": RAGSearchNode(mcp_client),
+            "action_planner": ActionPlannerNode(mcp_client),
+            "response_generator": ResponseGeneratorNode(mcp_client),
+            "action_executor": ActionExecutorNode(mcp_client)
+        }
+        
+        self.logger.info(
+            "🏗️ Grafo de conversación inicializado",
+            nodes_count=len(self.nodes)
+        )
+    
+    async def initialize(self) -> None:
+        """Inicializa el grafo y sus componentes."""
+        
+        try:
+            self.log_method_call("initialize")
+            
+            # Configurar checkpointer con PostgreSQL
+            # from_conn_string returns an async context manager
+            self.checkpointer_context = AsyncPostgresSaver.from_conn_string(self.database_url)
+            # Enter the context and keep it alive
+            self.checkpointer = await self.checkpointer_context.__aenter__()
+            await self.checkpointer.setup()
+            
+            # Construir grafo
+            self._build_graph()
+            
+            # Inicializar nodos
+            for node_name, node in self.nodes.items():
+                await node.initialize()
+                self.logger.debug(f"✅ Nodo {node_name} inicializado")
+            
+            self._ready = True
+            self.log_method_result("initialize")
+            
+        except Exception as e:
+            self.log_error("initialize", e)
+            raise

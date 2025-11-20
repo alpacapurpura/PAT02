@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_maintenance_equipment_form_patco_manuales" model="ir.ui.view">
+            <field name="name">maintenance.equipment.form.patco.manuales</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group[@string='Documentation']" position="replace">
+                    <group/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

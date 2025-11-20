@@ -6,20 +6,44 @@
             <field name="model">maintenance.equipment</field>
             <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//sheet" position="inside">
+                <xpath expr="//sheet/notebook" position="before">
                     <group string="PATCO">
                         <field name="x_patco_code" readonly="1"/>
-                        <field name="x_customer_id"/>
-                        <field name="x_service_location_id"/>
+                        <field name="x_customer_id" domain="[('customer_rank','>',0)]"/>
+                        <field name="x_service_location_id" domain="[('parent_id','=',x_customer_id)]"/>
                     </group>
                     <group string="Mobile Access">
                         <field name="x_qr_code" widget="image"/>
                         <field name="x_qr_url" widget="url" readonly="1"/>
                     </group>
-                    <group string="Technicians">
-                        <field name="technician_id"/>
-                        <field name="technician_ids" widget="many2many_tags" options="{'no_create': True}"/>
-                    </group>
+                </xpath>
+
+                <xpath expr="//sheet/notebook" position="inside">
+                    <page string="Documentación" name="patco_docs">
+                        <group string="Checklists">
+                            <group string="Entrada">
+                                <field name="x_doc_entry_checklist" widget="html" nolabel="1"/>
+                            </group>
+                            <group string="Salida">
+                                <field name="x_doc_exit_checklist" widget="html" nolabel="1"/>
+                            </group>
+                        </group>
+                        <group string="Documentos">
+                            <field name="x_doc_attachment_ids" mode="list,form" nolabel="1" readonly="1">
+                                <list string="Documentos" create="0">
+                                    <field name="name"/>
+                                    <field name="mimetype"/>
+                                    <field name="file_size"/>
+                                    <field name="create_date"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+
+                <!-- Insertar Marca encima de Modelo -->
+                <xpath expr="//field[@name='model']" position="before">
+                    <field name="x_brand" string="Marca"/>
                 </xpath>
             </field>
         </record>

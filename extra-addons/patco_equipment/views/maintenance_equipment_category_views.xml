@@ -1,67 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="view_maintenance_equipment_category_form_patco" model="ir.ui.view">
-            <field name="name">maintenance.equipment.category.form.patco</field>
-            <field name="model">maintenance.equipment.category</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_category_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//sheet" position="inside">
-                    <group string="Inheritance">
-                        <field name="x_inherit_checklists"/>
-                        <field name="x_inherit_knowledge_base"/>
-                    </group>
-                    <notebook>
-                        <page string="Checklists">
-                            <group>
-                                <group string="Entry">
-                                    <field name="x_entry_checklist_template" widget="html" nolabel="1"/>
-                                </group>
-                                <group string="Exit">
-                                    <field name="x_exit_checklist_template" widget="html" nolabel="1"/>
-                                </group>
-                            </group>
-                            <group string="Effective" invisible="not x_inherit_checklists or not parent_id">
-                                <group>
-                                    <field name="x_effective_entry_checklist" widget="html" readonly="1" nolabel="1"/>
-                                </group>
-                                <group>
-                                    <field name="x_effective_exit_checklist" widget="html" readonly="1" nolabel="1"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Knowledge">
-                            <group>
-                                <field name="x_knowledge_base" widget="html" nolabel="1"/>
-                            </group>
-                            <group string="Documents">
-                                <field name="x_attachment_ids" widget="many2many_binary" nolabel="1"/>
-                            </group>
-                            <group>
-                                <button name="action_view_knowledge_base" type="object" string="View Knowledge Base" class="btn-primary" icon="fa-book"/>
-                                <button name="action_view_inherited_knowledge_base" type="object" string="View Inherited" class="btn-secondary" icon="fa-level-up"/>
-                                <button name="action_export_knowledge_base" type="object" string="Export" class="btn-secondary" icon="fa-download"/>
-                            </group>
-                            <group string="Stats">
-                                <field name="x_knowledge_base_count" readonly="1"/>
-                                <field name="x_inherited_knowledge_count" readonly="1"/>
-                            </group>
-                        </page>
-                    </notebook>
-                </xpath>
-            </field>
-        </record>
-
-        <record id="view_maintenance_equipment_category_list_patco" model="ir.ui.view">
-            <field name="name">maintenance.equipment.category.list.patco</field>
-            <field name="model">maintenance.equipment.category</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_category_view_tree"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='name']" position="after">
-                    <field name="x_knowledge_base_count" optional="show"/>
-                    <field name="x_inherited_knowledge_count" optional="hide"/>
-                </xpath>
-            </field>
-        </record>
+        <!-- Vistas trasladadas a patco_manuales -->
     </data>
 </odoo>

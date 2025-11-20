@@ -6,9 +6,39 @@
             <field name="model">maintenance.request</field>
             <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group[1]" position="inside">
-                    <field name="fsm_order_id"/>
-                    <field name="technician_id"/>
+                <xpath expr="//sheet/notebook" position="before">
+                    <group string="Información del equipo">
+                        <group>
+                            <field name="eq_brand"/>
+                            <field name="eq_model"/>
+                            <field name="eq_serial_no"/>
+                            <field name="eq_customer_id"/>
+                            <field name="eq_service_location_id"/>
+                            <field name="fsm_order_id"/>
+                            <field name="qr_url" widget="url" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="qr_code" widget="image" readonly="1"/>
+                        </group>
+                    </group>
+                </xpath>
+                <!-- Nota: la pestaña equipment_info ya fue reemplazada por páginas separadas en patco_manuales; no se requiere eliminarla aquí. -->
+                <!-- Ocultar campos no necesarios en formulario -->
+                <xpath expr="//sheet//field[@name='maintenance_team_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet//field[@name='email_cc']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet//field[@name='priority']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!-- Ocultar pestañas Notas e Instrucciones -->
+                <xpath expr="//sheet//notebook/page[.//field[@name='instruction_type']]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet//notebook/page[.//field[@name='description'] or .//field[@name='internal_notes']]" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
             </field>
         </record>

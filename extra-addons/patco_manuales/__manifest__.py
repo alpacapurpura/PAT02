@@ -1,0 +1,27 @@
+{
+    'name': 'PATCO Manuals & Checklists',
+    'version': '18.0.1.0.0',
+    'summary': 'Manuals and checklists on equipment categories with inheritance',
+    'author': 'PATCO',
+    'website': 'https://www.patco.pe',
+    'license': 'LGPL-3',
+    'depends': [
+        'maintenance',
+        'maintenance_equipment_category_hierarchy',
+        'patco_equipment',
+        'patco_base_nativo',
+        'patco_base_oca',
+        'patco_reports',
+        'web_widget_url_advanced',
+    ],
+    'data': [
+        'views/maintenance_equipment_category_views.xml',
+        'views/maintenance_equipment_views_patch.xml',
+        'views/maintenance_request_views.xml',
+        'views/ir_attachment_views.xml',
+        'views/ir_attachment_minimal_view.xml',
+    ],
+    'demo': [],
+    'installable': True,
+    'application': False,
+}

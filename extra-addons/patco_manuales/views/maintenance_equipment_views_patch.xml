@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_maintenance_equipment_form_patco_patch_inline" model="ir.ui.view">
+            <field name="name">maintenance.equipment.form.patco.patch.inline</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="patco_equipment.view_maintenance_equipment_form_patco"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='patco_docs']//field[@name='x_doc_attachment_ids']" position="attributes">
+                    <attribute name="options">{'no_open': True}</attribute>
+                    <attribute name="mode">list</attribute>
+                </xpath>
+                <xpath expr="//page[@name='patco_docs']//field[@name='x_doc_attachment_ids']/list" position="replace">
+                    <list string="Documentos" create="0" delete="0">
+                        <button name="action_open_inline_url" type="object" string="Ver documento" icon="fa-eye" class="btn-primary"/>
+                        <field name="name" string="Nombre"/>
+                        <field name="mimetype" string="Tipo MIME"/>
+                        <field name="file_size" string="Tamaño"/>
+                    </list>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_attachment_form_patco_preview_min" model="ir.ui.view">
+            <field name="name">ir.attachment.form.patco.preview.min</field>
+            <field name="model">ir.attachment</field>
+            <field name="arch" type="xml">
+                <form string="Attachment Preview" create="0" edit="0" delete="0" duplicate="0">
+                    <header>
+                        <button name="action_open_inline_url" type="object" string="Abrir en nueva pestaña" class="btn-primary"/>
+                    </header>
+                    <sheet>
+                        <group string="Preview">
+                            <field name="datas" widget="pdf_viewer" filename="name" nolabel="1"
+                                   invisible="type != 'binary' or mimetype != 'application/pdf'"/>
+                            <field name="datas" widget="image" filename="name" nolabel="1"
+                                   invisible="type != 'binary' or (mimetype and mimetype not in ('image/png','image/jpeg','image/jpg','image/webp','image/gif','image/bmp','image/tiff','image/svg+xml'))"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

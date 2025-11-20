@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="maintenance_request_view_form_informe" model="ir.ui.view">
+            <field name="name">maintenance.request.form.informe</field>
+            <field name="model">maintenance.request</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="string">Request</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="maintenance_request_view_form_simple_report" model="ir.ui.view">
+            <field name="name">maintenance.request.form.simple.report</field>
+            <field name="model">maintenance.request</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+            <field name="priority" eval="200"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_title']" position="after">
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_start_report" icon="fa-play">
+                            <field name="informe_count" widget="statinfo" string="Reporte"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_finish_report" icon="fa-stop">
+                            <field name="report_duration_hours" widget="statinfo" string="Hours"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_export_informe" icon="fa-file-pdf">
+                            <field name="informe_count" widget="statinfo" string="Exportar informe"/>
+                        </button>
+                    </div>
+                </xpath>
+                <xpath expr="//sheet/notebook" position="inside">
+                    <page string="Reporte de Ejecución">
+                        <group>
+                            <field name="report_started" readonly="1"/>
+                            <field name="report_start_datetime" readonly="1"/>
+                            <field name="report_end_datetime" readonly="1"/>
+                            <!-- Duración excluida por requerimiento -->
+                        </group>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_start_report" icon="fa-play" invisible="report_started">
+                                <field name="informe_count" widget="statinfo" string="Reporte"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_finish_report" icon="fa-stop" invisible="not report_started">
+                                <field name="report_duration_hours" widget="statinfo" string="Hours"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_export_informe" icon="fa-file-pdf">
+                                <field name="informe_count" widget="statinfo" string="Exportar informe"/>
+                            </button>
+                        </div>
+                        <group>
+                            <field name="report_notes" placeholder="Describe the service work"/>
+                            <field name="include_checklists"/>
+                        </group>
+                        <field name="report_image_ids">
+                            <list editable="bottom">
+                                <field name="image" widget="image" style="max-height:300px; max-width:300px; object-fit:contain;"/>
+                                <field name="description"/>
+                            </list>
+                            <form>
+                                <sheet>
+                                    <group>
+                                        <field name="image" widget="image" class="oe_inline"/>
+                                        <field name="description"/>
+                                    </group>
+                                </sheet>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

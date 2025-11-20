@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="PatcoAttachmentModal">
+        <div class="modal fade" id="patcoAttachmentModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen-sm-down modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><t t-esc="props.title"/></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <t t-if="props.mimetype and props.mimetype.startsWith('image/')">
+                            <img t-att-src="props.url" class="img-fluid"/>
+                        </t>
+                        <t t-elif="props.mimetype == 'application/pdf'">
+                            <iframe t-att-src="props.url" style="width:100%;height:80vh" frameborder="0"></iframe>
+                        </t>
+                        <t t-else="">
+                            <a t-att-href="props.url" class="btn btn-primary" target="_blank">Open</a>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

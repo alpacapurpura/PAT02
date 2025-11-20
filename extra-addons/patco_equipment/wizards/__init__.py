@@ -1,0 +1,1 @@
+from . import assign_equipment_wizard

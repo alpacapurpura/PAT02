@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="maintenance_request_view_form_patco_manuales" model="ir.ui.view">
+            <field name="name">maintenance.request.form.patco.manuales</field>
+            <field name="model">maintenance.request</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Insertar primero Historial y luego colocar las otras páginas antes de él para asegurar orden -->
+                <xpath expr="//notebook/page[.//field[@name='instruction_type']]" position="after">
+                    <page string="Historial" name="history">
+                        <group>
+                            <field name="equipment_id" nolabel="1"/>
+                            <field name="x_history_request_ids" nolabel="1">
+                                <list string="Requests">
+                                    <field name="name"/>
+                                    <field name="maintenance_type"/>
+                                    <field name="stage_id"/>
+                                    <field name="request_date"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='history']" position="before">
+                    <page string="Checklist de entrada" name="req_entry_checklist">
+                        <group>
+                            <field name="x_req_entry_checklist" widget="html" nolabel="1" readonly="1"/>
+                        </group>
+                    </page>
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='history']" position="before">
+                    <page string="Checklist de salida" name="req_exit_checklist">
+                        <group>
+                            <field name="x_req_exit_checklist" widget="html" nolabel="1" readonly="1"/>
+                        </group>
+                    </page>
+                </xpath>
+
+                <xpath expr="//notebook/page[@name='history']" position="before">
+                    <page string="Documentación" name="req_docs">
+                        <group>
+                            <field name="x_req_attachment_ids" nolabel="1" readonly="1" mode="list" options="{'no_open': True}">
+                                <list string="Documentos" create="0" delete="0">
+                                    <button name="action_open_inline_url" type="object" string="Ver documento" icon="fa-eye" class="btn-primary"/>
+                                    <field name="name" string="Nombre"/>
+                                    <field name="mimetype" string="Tipo MIME"/>
+                                    <field name="file_size" string="Tamaño"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

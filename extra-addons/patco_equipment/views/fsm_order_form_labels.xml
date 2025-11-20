@@ -1,0 +1,36 @@
+<odoo>
+    <data>
+        <record id="patco_ux_fsm_order_form_labels" model="ir.ui.view">
+            <field name="name">patco_ux.fsm.order.form.labels</field>
+            <field name="model">fsm.order</field>
+            <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='description_grp']/field[@name='description']" position="attributes">
+                    <attribute name="nolabel">0</attribute>
+                    <attribute name="string">Descripción</attribute>
+                    <attribute name="placeholder">Añadir una descripción para el pedido…</attribute>
+                </xpath>
+                <xpath expr="//group[@name='resolution_grp']/field[@name='resolution']" position="attributes">
+                    <attribute name="nolabel">0</attribute>
+                    <attribute name="string">Resolución</attribute>
+                    <attribute name="placeholder">Introduzca la resolución de la orden…</attribute>
+                </xpath>
+                <xpath expr="//page[@name='planning_page']//field[@name='person_ids']" position="attributes">
+                    <attribute name="nolabel">0</attribute>
+                    <attribute name="string">Trabajadores Solicitados</attribute>
+                    <attribute name="help">Seleccione los trabajadores requeridos para esta orden.</attribute>
+                </xpath>
+                <xpath expr="//page[@name='instructions_page']//field[@name='todo']" position="attributes">
+                    <attribute name="nolabel">0</attribute>
+                    <attribute name="string">Instrucciones</attribute>
+                    <attribute name="help">Detalle los pasos a seguir durante la intervención.</attribute>
+                </xpath>
+                <xpath expr="//page[@name='instructions_page']//field[@name='location_directions']" position="attributes">
+                    <attribute name="nolabel">0</attribute>
+                    <attribute name="string">Indicaciones de Ubicación</attribute>
+                    <attribute name="help">Información útil para llegar al lugar del servicio.</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

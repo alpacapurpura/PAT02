@@ -36,6 +36,7 @@
         'web_notify',                       # Notificaciones web
         #'web_environment_ribbon',           # Cinta de ambiente
         'web_dialog_size',                  # Tamaño de diálogos
+        'fieldservice',                     # Vistas Field Service (para herencia)
 
         # --- Búsqueda y Filtros ---
         #'web_search_with_and',      # Permite búsquedas "AND" con Shift
@@ -52,7 +53,8 @@
         #'sequence_check_digit',             # Dígitos de verificación
         #'server_action_mass_edit',          # Edición masiva
     ],
-    'data': [],
+    'data': [
+    ],
     'demo': [],
     'installable': True,
     'auto_install': False,

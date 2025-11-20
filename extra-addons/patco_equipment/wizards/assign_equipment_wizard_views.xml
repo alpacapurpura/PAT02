@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_assign_equipment_wizard_form" model="ir.ui.view">
+            <field name="name">assign.equipment.wizard.form</field>
+            <field name="model">assign.equipment.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Agregar activo a Orden FSM">
+                    <group>
+                        <field name="fsm_order_id" readonly="1"/>
+                        <field name="customer_id" readonly="1"/>
+                        <field name="location_id" readonly="1"/>
+                        <field name="request_early" readonly="1"/>
+                    </group>
+                    <group string="Asignación">
+                        <field name="equipment_id" options="{'no_create': True}" domain="[('x_customer_id','=',customer_id)]"/>
+                        <field name="technician_id" options="{'no_create': True}"/>
+                        <field name="maintenance_type"/>
+                    </group>
+                    <footer>
+                        <button string="Asignar" type="object" name="action_assign" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_assign_equipment_wizard" model="ir.actions.act_window">
+            <field name="name">Agregar activo</field>
+            <field name="res_model">assign.equipment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_assign_equipment_wizard_form"/>
+            <field name="target">new</field>
+            <field name="context">{'active_id': active_id}</field>
+        </record>
+    </data>
+</odoo>

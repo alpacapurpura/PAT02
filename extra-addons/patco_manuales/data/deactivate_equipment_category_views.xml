@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="patco_equipment.view_maintenance_equipment_category_form_patco" model="ir.ui.view">
+            <field name="active">False</field>
+        </record>
+        <record id="patco_equipment.view_maintenance_equipment_category_list_patco" model="ir.ui.view">
+            <field name="active">False</field>
+        </record>
+    </data>
+</odoo>

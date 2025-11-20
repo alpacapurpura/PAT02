@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="maintenance_equipment_view_form_history" model="ir.ui.view">
+            <field name="name">maintenance.equipment.form.history</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/notebook" position="inside">
+                    <page string="History">
+                        <group>
+                            <field name="fsm_order_ids"/>
+                            <field name="maintenance_request_ids"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -2,6 +2,7 @@ import base64
 import io
 import qrcode
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class MaintenanceEquipment(models.Model):
@@ -10,11 +11,21 @@ class MaintenanceEquipment(models.Model):
     x_patco_code = fields.Char(string='PATCO Code', copy=False, readonly=True, default='New', tracking=True)
     x_customer_id = fields.Many2one('res.partner', string='Customer', tracking=True)
     x_service_location_id = fields.Many2one('res.partner', string='Service Location', tracking=True)
+    x_brand = fields.Char(string='Marca')
     x_qr_code = fields.Binary(string='QR Code', readonly=True)
     x_qr_url = fields.Char(string='QR URL', readonly=True)
 
-    x_service_order_ids = fields.One2many('fsm.order', 'x_equipment_id', string='Service Orders')
+    x_service_order_ids = fields.Many2many(
+        'fsm.order',
+        'fsm_order_equipment_rel',
+        'equipment_id',
+        'order_id',
+        string='Service Orders'
+    )
     x_fsm_order_count = fields.Integer(string='FSM Orders', compute='_compute_fsm_order_count', store=True)
+    x_doc_entry_checklist = fields.Html(string='Entry Checklist', compute='_compute_doc_content', readonly=True)
+    x_doc_exit_checklist = fields.Html(string='Exit Checklist', compute='_compute_doc_content', readonly=True)
+    x_doc_attachment_ids = fields.Many2many('ir.attachment', string='Effective Documents', compute='_compute_doc_attachments', readonly=True)
     technician_ids = fields.Many2many('res.users', 'maintenance_equipment_res_users_rel', 'equipment_id', 'user_id', string='Technicians')
     technician_id = fields.Many2one('res.users', string='Primary Technician')
 
@@ -61,4 +72,45 @@ class MaintenanceEquipment(models.Model):
             'res_model': 'fsm.order',
             'domain': [('id', 'in', self.x_service_order_ids.ids)],
             'context': {'default_x_equipment_id': self.id},
+        }
+
+    def _compute_doc_attachments(self):
+        for record in self:
+            if record.category_id and hasattr(record.category_id, 'x_effective_attachment_ids'):
+                record.x_doc_attachment_ids = record.category_id.x_effective_attachment_ids
+            else:
+                record.x_doc_attachment_ids = self.env['ir.attachment']
+
+    def _compute_doc_content(self):
+        for record in self:
+            entry = False
+            exit = False
+            cat = record.category_id
+            if cat:
+                entry = getattr(cat, 'x_effective_entry_checklist', False)
+                exit = getattr(cat, 'x_effective_exit_checklist', False)
+            record.x_doc_entry_checklist = entry
+            record.x_doc_exit_checklist = exit
+
+    # No actions here: opening modal is handled client-side by JS on click
+
+    def action_patco_open_attachment(self):
+        self.ensure_one()
+        attachment = None
+        # context provides active_id when clicking from list
+        active_id = self.env.context.get('active_id')
+        if active_id:
+            attachment = self.env['ir.attachment'].browse(active_id)
+        if not attachment:
+            raise UserError('Attachment not found')
+        url = f"/web/content/{attachment.id}?download=false"
+        title = attachment.name
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Opening Attachment',
+                'message': title,
+                'type': 'info',
+            }
         }

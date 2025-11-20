@@ -69,9 +69,13 @@ class ConversationGraph(LoggingMixin):
             self.log_method_call("initialize")
             
             # Configurar checkpointer con PostgreSQL
-            self.checkpointer = AsyncPostgresSaver.from_conn_string(self.database_url)
-            async with self.checkpointer as checkpointer:
-                await checkpointer.setup()
+            # from_conn_string returns an async context manager, we need to enter it once
+            # and keep it alive for the application lifetime
+            checkpointer_cm = AsyncPostgresSaver.from_conn_string(self.database_url)
+            self.checkpointer = await checkpointer_cm.__aenter__()
+            # Store the context manager so we can properly exit it during cleanup
+            self._checkpointer_cm = checkpointer_cm
+            await self.checkpointer.setup()
             
             # Construir grafo
             self._build_graph()
@@ -394,9 +398,11 @@ class ConversationGraph(LoggingMixin):
                     await node.cleanup()
             
             # Limpiar checkpointer
-            if self.checkpointer:
-                # El checkpointer se limpia automáticamente
-                pass
+            if self.checkpointer and hasattr(self, '_checkpointer_cm'):
+                try:
+                    await self._checkpointer_cm.__aexit__(None, None, None)
+                except Exception:
+                    pass
             
             self._ready = False
             self.log_method_result("cleanup")

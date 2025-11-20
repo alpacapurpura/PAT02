@@ -89,10 +89,10 @@ class MessageProcessorNode(LoggingMixin):
             message_content = last_message.content
             
             # Analizar intención
-            intent = await self._analyze_intent(message_content, state.context)
+            intent = await self._analyze_intent(message_content, state.context.dict())
             
             # Extraer entidades
-            entities = await self._extract_entities(message_content, state.context)
+            entities = await self._extract_entities(message_content, state.context.dict())
             
             # Actualizar estado
             state.current_intent = intent
