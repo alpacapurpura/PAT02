@@ -13,15 +13,15 @@ class TestPatcoAIProcessor(TransactionCase):
         self.env['patco.ai.bot.user'].ensure_bot()
 
         # Create a channel and user
-        self.channel = self.env['discuss.channel'].sudo().create({
-            'name': 'Test General',
-            'channel_type': 'channel',
-        })
-        self.user = self.env['res.users'].sudo().create({
-            'name': 'Tester',
-            'login': 'tester',
-            'email': 'tester@example.com',
-        })
+        # self.channel = self.env['discuss.channel'].sudo().create({
+        #     'name': 'Test General',
+        #     'channel_type': 'channel',
+        # })
+        # self.user = self.env['res.users'].sudo().create({
+        #     'name': 'Tester',
+        #     'login': 'tester',
+        #     'email': 'tester@example.com',
+        # })
 
         # Get bot partner
         pid = icp.get_param('ai.bot_partner_id')

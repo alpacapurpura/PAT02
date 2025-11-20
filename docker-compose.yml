@@ -629,7 +629,7 @@ networks:
     name: odoo-network-dev
     driver: bridge
   odoo-network-prod:
-    name: odoo-patco-network-prod
+    name: odoo-network-prod
     driver: bridge
   web_gateway:
     external: true

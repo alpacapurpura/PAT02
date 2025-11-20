@@ -12,7 +12,7 @@ class AIBotUser(models.TransientModel):
             bot = self.env['res.users'].sudo().create({
                 'name': 'Odoo Bot',
                 'login': 'odoo_bot',
-                'email': 'bot@patco.local',
+                'email': 'odoo_bot',
             })
         icp = self.env['ir.config_parameter'].sudo()
         icp.set_param('ai.bot_user_xmlid', 'patco_ai.user_odoo_bot')
