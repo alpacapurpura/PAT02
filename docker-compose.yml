@@ -161,7 +161,7 @@ services:
       CACHE_TTL: 300
       CACHE_MAX_SIZE: 1000
     env_file:
-      - ./.backup-code/.env
+      - .env
     volumes:
       - ./ai-services/mcp:/app
     networks:
@@ -201,7 +201,7 @@ services:
       CACHE_MAX_SIZE: 1000
       CORS_ORIGINS: http://patco.192.168.18.190.nip.io
     env_file:
-      - ./.backup-code/.env
+      - .env
     volumes:
       - ./ai-services/langgraph:/app
     networks:
@@ -228,7 +228,7 @@ services:
       INDEXING_BATCH_SIZE: 50
       INDEXING_CYCLE_INTERVAL: 300
     env_file:
-      - ./.backup-code/.env
+      - .env
     volumes:
       - ./ai-services/indexer:/app
     networks:
@@ -481,7 +481,7 @@ services:
       CACHE_TTL: 300
       CACHE_MAX_SIZE: 1000
     env_file:
-      - ./.backup-code/.env
+      - .env
     networks:
       - odoo-network-prod
       - web_gateway
@@ -526,7 +526,7 @@ services:
       CACHE_TTL: 300
       CACHE_MAX_SIZE: 1000
     env_file:
-      - ./.backup-code/.env
+      - .env
     networks:
       - odoo-network-prod
       - web_gateway
@@ -560,7 +560,7 @@ services:
       INDEXING_BATCH_SIZE: 50
       INDEXING_CYCLE_INTERVAL: 300
     env_file:
-      - ./.backup-code/.env
+      - .env
     networks:
       - odoo-network-prod
 
